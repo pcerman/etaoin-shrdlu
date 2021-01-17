@@ -1,0 +1,33 @@
+;;; -*- mode: lisp -*-
+
+;;;  +---------------------------------------------------------------+
+;;;  | etaoin-shrdlu: LISP interpreter for the SHRDLU project        |
+;;;  |                                                               |
+;;;  | Original source code is published in github resository:       |
+;;;  | https://github.com/pcerman/etaoin-shrdlu.                     |
+;;;  |                                                               |
+;;;  | Copyright (c) 2021 Peter Cerman (https://github.com/pcerman)  |
+;;;  |                                                               |
+;;;  | This source code is released under Mozilla Public License 2.0 |
+;;;  +---------------------------------------------------------------+
+
+;;; Functions to report the movement of the hand and blocks.
+
+(DEFUN MOVETO (X Y Z)
+  (PRINC `  ==  MOVING HAND TO `)
+  (PRINC (LIST X Y Z))
+  (TERPRI))
+
+(DEFUN GRASP (X)
+  (PRINC `  ==  GRASPING BLOCK `)
+  (PRINC X)
+  (TERPRI))
+
+(DEFUN UNGRASP NIL
+  (PRINC `  ==  LETTING GO`)
+  (TERPRI))
+
+(DEFUN BLINK (X)
+  (PRINC `  ==  CHOOSING BLOCK `)
+  (PRINC X)
+  (TERPRI))

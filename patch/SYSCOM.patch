@@ -1,0 +1,57 @@
+--- code/syscom	1997-09-16 19:16:36.000000000 +0200
++++ SHRDLU/SYSCOM	2020-12-17 00:22:54.000000000 +0100
+@@ -66,7 +66,7 @@
+ 		       ((APPLY 'SAY
+ 			       (OR GLOBAL-MESSAGE
+ 				   '(I DON/'T UNDERSTAND/.))))))
+-		     ((PRINT *3)
++		     ((OR ANNOYANCE (PRINT *3))
+ 		      (APPLY 'SAY
+ 			     (OR GLOBAL-MESSAGE
+ 				 '(I DON/'T UNDERSTAND/.)))))
+@@ -108,7 +108,7 @@
+ ;;;********************************************
+ ;;; how to use:
+ ;;;
+-;;;   from within an  break at "READY", open, via uread, the file that
++;;;   from within an $$ break at "READY", open, via uread, the file that
+ ;;;   contains the sentences to be tested (see sample files on LANG;) and
+ ;;;   open a file to write onto and do a (IOC r) whenever thing are set
+ ;;;   up (remember that all prints will copy to the file after the ioc
+@@ -120,8 +120,8 @@
+ ;;;   guarenteed.
+ ;;;     Functions below trap at the obvious places and could be tailored
+ ;;;   to desired stuff.
+-;;;     At this point, the preliminaries are over; proceed the  break
+-;;;   and type a "m" and the next READY. - it should take off. 
++;;;     At this point, the preliminaries are over; proceed the $$ break
++;;;   and type a "$m" and the next READY. - it should take off. 
+ ;;;
+ 
+ (DEFUN AFTER-EACH-SENTENCE NIL 
+@@ -130,7 +130,7 @@
+ 
+ (DEFUN END-OF-FILE-CONDITION NIL 
+        (AND ^R (UFILE SHTRCE >))
+-       (AND GO-AWAY (VALRET 'U))) 
++       (AND GO-AWAY (VALRET '$$U))) 
+ 
+ (SETQ GO-AWAY NIL MOBYTEST-IN-PROGRESS NIL) 
+ 
+@@ -387,6 +387,7 @@
+ (DEFUN ERTEX (MESSAGE CAUSE-ABORTION IGNORE-NOSTOP-SWITCH?) 
+        (PROG (ERT-TIME GLOP EXP ST-BUFFER BUILDING-ST-FORM ^W ^Q
+ 	      FIRSTWORD) 
++	     (AND NEVERSTOP (RETURN NIL))
+ 	     (AND MOBYTEST-IN-PROGRESS (IOC W))
+ 	     (AND NOSTOP
+ 		  (NOT IGNORE-NOSTOP-SWITCH?)
+@@ -419,7 +420,7 @@
+ 	     ;;;
+ 	     (COND ((ATOM GLOP)
+ 		    (SETQ GLOP (OR (GET GLOP 'ABBREV) GLOP))
+-		    (COND ((MEMQ GLOP '(T P NIL))		       ;LEAVE-LOOP CHARS
++		    (COND ((MEMQ GLOP '(T $P NIL))		       ;LEAVE-LOOP CHARS
+ 			   (SETQ ERT-TIME
+ 				 (PLUS (TIME-SINCE ERT-TIME)
+ 				       ERT-TIME))		       ;ERT-TIME IS BOUND BY SHRDLU

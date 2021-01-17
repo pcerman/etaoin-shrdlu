@@ -1,0 +1,32 @@
+--- code/dictio	1997-09-16 19:16:33.000000000 +0200
++++ SHRDLU/DICTIO	2020-12-16 22:41:24.000000000 +0100
+@@ -103,7 +103,7 @@
+ 					    '#1
+ 					    (LIST 'QUOTE
+ 						  (REFER? #2))))))))
+-		   (T (ERTSTOP SORRY I DON 'T UNDERSTAND THE
++		   (T (ERTERR SORRY I DON/'T UNDERSTAND THE
+ 			       VERB BE WHEN YOU USE IT LIKE
+ 			       THAT))))
+ 
+@@ -175,7 +175,7 @@
+ 		 (RETURN (PROG (CUT NBB BOTH) 
+ 			       (SETQ NBB N)
+ 			       (AND (FLUSHME)
+-				    (** N
++				    (MOVE-PTW N
+ 					NW
+ 					(EQ (WORD PTW) (CAR A))
+ 					NW)
+@@ -1030,9 +1030,9 @@
+ 		(RELATION 
+ 		    (RESTRICTIONS: (((#PHYSOB)) ((#DIRECTION))) 
+ 		     PROCEDURE: ((#EVAL
+-				  (SUBTOP '#1
++				  (SUBST '#1
+ 					  '*OF
+-					  (REFERENCE? SMOB1)))))))) 
++					  (REFER? SMOB1)))))))) 
+     FEATURES (PREP))
+ 
+ (DEFS TOGETHER SEMANTICS ((PRT T)) FEATURES (PRT))

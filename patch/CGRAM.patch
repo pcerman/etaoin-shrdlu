@@ -1,0 +1,52 @@
+--- code/cgram	1997-09-16 19:16:33.000000000 +0200
++++ SHRDLU/CGRAM	2020-12-28 22:55:52.000000000 +0100
+@@ -1,16 +1,16 @@
+ (declare (genprefix cgram))
+ 
+-################################################################
+-
+-		CGRAM >
+-
+-    the regular grammar after going through the precompiler
+-################################################################
++;;;################################################################
++;;;
++;;;		CGRAM >
++;;;
++;;;    the regular grammar after going through the precompiler
++;;;################################################################
+ 
+ 
+ 
+ (DEFUN CLAUSE NIL 
+-       (PROG (FE H ME NB C SM CUT NN T1 T2 T3 :RESULT POSITION-OF-PRTMVB LOCATIONMARKER
++       (PROG (FE H ME NB C SM CUT NN T1 T2 T3 :RESULT POSITION-OF-PRT MVB LOCATIONMARKER
+ 	      SUBJ-VB-BACKUP-TYPE1 POSITION-OF-PTW) 
+ 	     (SETQ NN T)
+ 	     (SETQ CUT END)
+@@ -555,6 +555,7 @@
+ 	     (SETR 'PARENT PARENT C)
+ 	ENTERING-NG
+ 	     (AND LABELTRACE (PASSING 'ENTERING-NG))
++	     (SETQ T2 0)
+ 	NGSTART
+ 	     (AND LABELTRACE (PASSING 'NGSTART))
+ 	     (COND ((CQ RELWD) (GO RELWD))
+@@ -733,6 +734,9 @@
+ 	CLASF(AND LABELTRACE (PASSING 'CLASF))
+ 	     (SETQ :RESULT (OR (PARSE VB ING (CLASF)) (PARSE VB EN (CLASF)) (PARSE CLASF)))
+ 	     (COND (:RESULT (COND ((NULL NN) (GO REDUC)) (T (GO CLASF)))))
++	     (SETQ T2 (1+ T2))
++	     (AND (GREATERP T2 100)
++	          (GO FAIL))
+ 	NOUN (AND LABELTRACE (PASSING 'NOUN))
+ 	     (SETQ :RESULT (PARSE NOUN))
+ 	     (COND ((NULL :RESULT) (GO RED2)))
+@@ -1482,5 +1486,5 @@
+ 		  (OR (NULL FEATURE) (F FEATURE))
+ 		  (RETURN T))))
+ 
+-REMEMBER/ TO/ UFILE 
++'REMEMBER/ TO/ UFILE
+ 
+\ No newline at end of file

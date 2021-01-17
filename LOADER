@@ -1,0 +1,90 @@
+;;; -*- mode: lisp -*-
+
+;;;  +---------------------------------------------------------------+
+;;;  | etaoin-shrdlu: LISP interpreter for the SHRDLU project        |
+;;;  |                                                               |
+;;;  | Original source code is published in github resository:       |
+;;;  | https://github.com/pcerman/etaoin-shrdlu.                     |
+;;;  |                                                               |
+;;;  | Copyright (c) 2021 Peter Cerman (https://github.com/pcerman)  |
+;;;  |                                                               |
+;;;  | This source code is released under Mozilla Public License 2.0 |
+;;;  +---------------------------------------------------------------+
+
+;;; SHRDLU loader
+
+(LOAD 'pdp-6//compatibility.lisp)
+(LOAD 'pdp-6//read-hook.lisp)
+
+(DEFUN LOADER (*!?KEY)
+  (OR (ERRSET (EVAL (LIST 'UREAD
+                          *!?KEY
+                          '>
+                          'DSK
+                          'SHRDLU))
+              NIL)
+      (AND (PRINT *!?KEY)
+           (PRINC 'NOT-FOUND)
+           (RETURN NIL)))
+  (LOADX))
+
+(DEFUN LOADX ()
+  (PROG (*!?H *!?F *!?EOF)
+        (SETQ *!?EOF (GENSYM))
+        (PRINT 'READING)
+        (PRINC *!?KEY)
+        (SETQ VERSION-FILES (CONS (STATUS UREAD) VERSION-FILES))
+    LOOP
+        ((LAMBDA (^Q) (SETQ *!?H (READ *!?EOF))) T)
+        (AND (EQ *!?H *!?EOF) (RETURN T))
+        (OR (ERRSET ((LAMBDA (^W ^Q) (EVAL *!?H)) T T))
+            (PROG2 (PRINT 'ERROR-IN-FILE) (PRINT *!?H)))
+        (GO LOOP)))
+
+(SETQ VERSION-FILES NIL)
+
+(DEFUN LOADSHRDLU ()
+
+  (SSTATUS CXR T)
+  (SSTATUS READ-HOOK THSVAR)
+
+  (SETQ PURE NIL)
+
+  (MAPC 'LOADER '(PLNR THTRAC))
+  (THINIT)
+  (SETQ THINF NIL THTREE NIL THLEVEL NIL)
+  (MAPC 'LOADER '(SYSCOM MORPHO SHOW))
+  (MAPC 'LOADER '(PROGMR GINTER CGRAM DICTIO))
+  (MAPC 'LOADER '(SMSPEC SMASS SMUTIL))
+  (LOADER 'NEWANS)
+  (MAPC 'LOADER '(BLOCKL BLOCKP DATA MOVER))
+  (LOADER 'SETUP)
+
+  (TERPRI)
+  (TERPRI)
+  (PRINC `*** CONSTRUCTION COMPLETED ***`)
+  (TERPRI))
+
+(DEFUN RUN ()
+  ;; Set either (DEBUGMODE) or (USERMODE) here.
+  (USERMODE)
+  ;;(DEBUGMODE)
+
+  ;;(LABELTRACE CLAUSE NG VG ADJG PREPG CONJOIN)
+  ;;(SETQ LABELTRACE T)
+  ;;(PARSETRACE)
+  ;;(SMNTRACE)
+
+  (SETQ ANNOYANCE T)
+  ;;(SETQ NEVERSTOP NIL)
+  (SETQ SH-STANDARD-PRINTOUT NIL)
+  (TOTALTIME NIL)
+
+  ;; Start the program
+  (INITIALSTUFF 'UMR-1.0 NIL))
+
+(LOADSHRDLU)
+
+(PRINC `*** To run SHRDLU do: (RUN)`)
+(TERPRI)
+(TERPRI)

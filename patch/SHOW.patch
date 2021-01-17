@@ -1,0 +1,30 @@
+--- code/show	1997-09-16 19:16:35.000000000 +0200
++++ SHRDLU/SHOW	2020-11-05 11:25:06.000000000 +0100
+@@ -61,7 +61,7 @@
+ 		      ((GET X 'INTERPRET)
+ 		       (SETQ BODY (CDR (GET X 'INTERPRET))))
+ 		      ((GET X 'EXPR)
+-		       (SETQ BODY (CDDR (CADDR (GET X 'EXPR)))))
++		       (SETQ BODY (AND NIL (CDDR (CADDR (GET X 'EXPR))))))
+ 		      (T (PRINC 'CAN/'T/ BE-) (GO TRACED)))
+ 		(MAP '(LAMBDA (Y) 
+ 			      (AND (ATOM (CAR Y))
+@@ -418,7 +418,8 @@
+ (DEFS LISP
+       SHOWTREE
+       (PROPERTY FUNCTION VALUE)
+-      TELLTELLCHOICE
++      TELL
++      TELLCHOICE
+       TELLTREE
+       (FUNCTION)
+       SHOW
+@@ -1023,7 +1024,7 @@
+ 						((#HAPPY #1)
+ 						 (#SMILING #1)))))))))
+ 	       'SEMANTICS)
+-	      (RETURN T))))
++	      (RETURN T)));)
+ 
+ (DEFUN HELP NIL 
+        (COND ((EQ 'S

@@ -1,0 +1,86 @@
+--- code/setup	1997-09-16 19:16:35.000000000 +0200
++++ SHRDLU/SETUP	2021-01-17 14:31:18.787856883 +0100
+@@ -54,8 +54,8 @@
+       =LINE
+       '========================================================) 
+ 
+-(OR (GET 'CLAUSE 'SUBR)
+-    (LABELTRACE CLAUSE NG VG ADJG PREPG CONJOIN)) 
++;;(OR (GET 'CLAUSE 'SUBR)
++;;    (LABELTRACE CLAUSE NG VG ADJG PREPG CONJOIN)) 
+ 
+ ;;*PAGE
+ 
+@@ -138,6 +138,8 @@
+       NIL
+       NOSTOP
+       NIL
++      NEVERSTOP
++      NIL
+       ANSWER?
+       T
+       SMN
+@@ -176,6 +178,8 @@
+        (NOPAUSES)
+        (SETQ NOSTOP
+ 	     T
++	     NEVERSTOP
++	     T
+ 	     ANSWER?
+ 	     T
+ 	     SMN
+@@ -194,6 +198,8 @@
+        (NOPAUSES)
+        (SETQ NOSTOP
+ 	     NIL
++	     NEVERSTOP
++	     NIL
+ 	     ANSWER?
+ 	     T
+ 	     SMN
+@@ -218,7 +224,7 @@
+ ;;;           INITIALIZATION ROUTINES
+ ;;;*****************************************************************
+ 
+-(DEFUN INITIALSTUFF (version date note) 
++(DEFUN INITIALSTUFF (version note)
+        (SUSPEND)
+        (CURSORPOS 'C)
+        (TERPRI)
+@@ -226,13 +232,11 @@
+        (princ version)
+        (princ '/ / / )
+        (PRINC 'LOADED/ )
+-       (PRINC date )
+-       (princ '/ )
+        (PRINC 'IN/ BLISP/ )
+        (princ (status lispversion))
+-       (TERPRI)
+-       (SAY REFER COMMENTS AND QUESTIONS TO DDM)
+-       (TERPRI)
++;;;       (TERPRI)
++;;;       (SAY REFER COMMENTS AND QUESTIONS TO DDM)
++;;;       (TERPRI)
+        (TERPRI)
+ (and note (progn (terpri)(apply 'say note)
+             (terpri)(terpri)))
+@@ -267,9 +271,9 @@
+ ;;;       (TERPRI)
+        (SAY YOU ARE NOW IN A READ-EVAL-PRINT LOOP)
+        (TERPRI)
+-       (SAY TYPE "GO/ " TO ENTER READY STATE)
+-       (CATCH (ERT) ABORT-PARSER)
+-       (sstatus toplevel '(shrdlu))
++;;;       (SAY TYPE "GO/ " TO ENTER READY STATE)
++;;;       (CATCH (ERT) ABORT-PARSER)
++;;;       (sstatus toplevel '(shrdlu))
+        (SHRDLU)) 
+ 
+ (DEBUGMODE) 
+@@ -285,4 +289,4 @@
+ (setq w1 (boole 7 w1 020202020202)
+       w2 (boole 7 w2 020202020202) )
+ (sstatus tty w1 w2)
+-
+\ No newline at end of file
++

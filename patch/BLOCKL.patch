@@ -1,0 +1,64 @@
+--- code/blockl	1997-09-16 19:16:33.000000000 +0200
++++ SHRDLU/BLOCKL	2020-12-26 08:58:13.000000000 +0100
+@@ -52,12 +52,12 @@
+ (DEFUN EV NIL (OR NOMEM $?EV))
+ (DEFUN FINDSPACE
+  (TYPE SURF SIZE OBJ)
+- (PROG (XYMAX XYMIN N V X1 X2)
++ (PROG (XYMAX XYMIN N V X1 X2 F-LEVEL)
+        (SETQ OBJ (LISTIFY OBJ))
+        (AND (MEMQ SURF OBJ) (RETURN NIL))
+        (COND ((EQ SURF (QUOTE :TABLE)) (SETQ XYMIN (QUOTE (0 0)))
+ 				       (SETQ XYMAX (QUOTE (1200 1200)))
+-				       (SETQ LEVEL 0)
++				       (SETQ F-LEVEL 0)
+ 				       (GO ON))
+ 	     ((SETQ X (ATAB SURF))))
+        (COND
+@@ -79,7 +79,7 @@
+ 	 (SETQ XYMIN (LIST (CAADR X) (CADADR X)))
+ 	 (SETQ XYMAX (LIST (PLUS (CAADDR X) (CAADR X))
+ 			   (PLUS (CADR (CADDR X)) (CADADR X))))
+-	 (SETQ LEVEL 1))
++	 (SETQ F-LEVEL 1))
+ 	((SETQ X1 (DIV2 (CAR SIZE)))
+ 	 (SETQ Y1 (DIV2 (CADR SIZE)))
+ 	 (SETQ XYMAX
+@@ -87,7 +87,7 @@
+ 		     (MIN 1200 (SUB1 (PLUS (CADR (CADDR X)) (CADADR X) Y1)))))
+ 	 (SETQ XYMIN (LIST (MAX 0 (DIFFERENCE (CAADR X) X1))
+ 			   (MAX 0 (DIFFERENCE (CADADR X) Y1))))
+-	 (SETQ LEVEL (PLUS (CADDR (CADR X)) (CADDR (CADDR X))))))
++	 (SETQ F-LEVEL (PLUS (CADDR (CADR X)) (CADDR (CADDR X))))))
+   ON   (SETQ N 10)
+        (SETQ X1 (DIFFERENCE (CAR XYMAX) (CAR XYMIN)))
+        (SETQ Y1 (DIFFERENCE (CADR XYMAX) (CADR XYMIN)))
+@@ -97,7 +97,7 @@
+ 					       (REMAINDER (ABSVAL (RANDOM)) X1))
+ 					 (PLUS (CADR XYMIN)
+ 					       (REMAINDER (ABSVAL (RANDOM)) Y1))
+-					 LEVEL)
++					 F-LEVEL)
+ 				   XYMIN
+ 				   XYMAX
+ 				   OBJ)))
+@@ -109,9 +109,9 @@
+ 						     (CAR SIZE)))
+ 				   (DIV2 (DIFFERENCE (PLUS (CADAR V) (CADADR V))
+ 						     (CADR SIZE)))
+-				   LEVEL))
++				   F-LEVEL))
+ 			    ((EQ TYPE (QUOTE PACK))
+-			     (LIST (CAAR V) (CADAR V) LEVEL))
++			     (LIST (CAAR V) (CADAR V) F-LEVEL))
+ 			    ((ERT FINDSPACE /-- TYPE))))))))
+ 
+ (DEFUN GOAL
+@@ -286,6 +286,7 @@
+ 	     ((CONS (LIST SIZE X) LIST))))
+ (DEFUN SIZE (X) (COND ((EQ X (QUOTE :BOX)) (QUOTE (400 400 300)))
+ 		      ((EQ X (QUOTE :TABLE)) (QUOTE (1200 1200 1200)))
++		      ((EQ X (QUOTE :HAND)) (QUOTE (0 0 0)))
+ 		      ((ATOM X) (CADDR (ATAB X)))
+ 		      (X)))
+ 

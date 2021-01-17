@@ -1,0 +1,73 @@
+--- code/blockp	1997-09-16 19:16:33.000000000 +0200
++++ SHRDLU/BLOCKP	2020-12-28 22:49:32.000000000 +0100
+@@ -1,11 +1,11 @@
+ 
+-################################################################
+-
+-		BLOCKP >
+-
+-
+-    MICRO-PLANNER CODE FOR THE "BLOCKS" MICRO-WORLD 
+-################################################################
++;;;################################################################
++;;;
++;;;		BLOCKP >
++;;;
++;;;
++;;;    MICRO-PLANNER CODE FOR THE "BLOCKS" MICRO-WORLD 
++;;;################################################################
+ 
+ 
+ (DEFPROP TA-AT
+@@ -501,7 +501,7 @@
+    ((AND $?X (CDR $?X)))
+    ((THSETQ
+      $_X
+-     (APPEND $?X
++     (APPEND (LISTIFY $?X)
+ 	     (THVAL (LIST (QUOTE THFIND)
+ 			  (COND ((NULL $?X) 3) (2))
+ 			  (QUOTE $?Y)
+@@ -597,7 +597,7 @@
+ (DEFPROP TCT-PICKUP
+ 	 (THCONSE (X EV TIME)
+ 		  (#PICKUP $?X $?TIME)
+-		  (THOR (THAND (THGOAL (#PICKUP$?EV $?X)) (TIMECHK $?EV $?TIME))
++		  (THOR (THAND (THGOAL (#PICKUP $?EV $?X)) (TIMECHK $?EV $?TIME))
+ 			(THGOAL (#PICKUP $?EV $?X $?TIME) (THUSE TCTE-PICKUP))))
+ 	 THEOREM)
+ 
+@@ -639,6 +639,15 @@
+ 		  (THAMONG $?X (LIST (CADDR $?Z))))
+ 	 THEOREM)
+ 
++(DEFPROP TCT-ON
++	 (THCONSE (Y X Z TIME)
++		  (#SUPPORT $?X $?Y $?TIME)
++		  (THOR (THGOAL (#MANIP $?Y)) (THGOAL (#IS $?Y #BOX)))
++		  (THAMONG $?Z (TFIND $?Y $?TIME))
++		  (NOT (LESSP (CAR $?Z) (OR (START? $?TIME) -1.)))
++		  (THAMONG $?X (LIST (CADDR $?Z))))
++	 THEOREM)
++
+ (DEFPROP TCT-2
+ 	 (THCONSE (X EV TIME) ($?X $?TIME) (THGOAL ($?X $?EV $?TIME)
+ 						   (THUSE TCTE-3)))
+@@ -686,7 +695,7 @@
+ 		  (TIMECHK $?EVENT $?TIME)
+ 		  (THOR (THGOAL (#PUTON $?EVENT $?X ?))
+ 			(THGOAL (#PICKUP $?EVENT $?X)))
+-		  (OR (THVSETQ $_Z (SUB1 (ASSQ (GET $?EVENT (QUOTE END))
++		  (OR (THVSETQ $_Z (ASSQ (SUB1 (GET $?EVENT (QUOTE END))
+ 					       (GET $?X (QUOTE HISTORY)))))
+ 		      (ERT TCTE-PUT WRONG))
+ 		  (THAMONG $?Y (LIST (CADR $?Z)))
+@@ -746,7 +755,7 @@
+ (DEFPROP TE-EXISTS (THERASING (X) (#EXISTS $?X) (THSUCCEED)) THEOREM)
+ 
+ (DEFPROP TE-SUPP
+-	 (THERASING (X Y Z)
++	 (THERASING (X Y Z W)
+ 		    (#AT $?X ?)
+ 		    (THCOND ((THGOAL (#SUPPORT $?X $_Y)) (ERT TE-SUPP))
+ 			    ((THGOAL (#SUPPORT $_Y $?X))

@@ -1,0 +1,22 @@
+--- code/plnr	1997-09-16 19:16:35.000000000 +0200
++++ SHRDLU/PLNR	2020-12-16 22:41:24.000000000 +0100
+@@ -2433,10 +2433,10 @@
+ 	     (TERPRI)
+ 	     
+ 	     ;;READ IN S EXPRESSION.
+-	     (ERRSET (COND ((EQ (SETQ /0LISTEN (READ)) (QUOTE P))
++	     (ERRSET (COND ((EQ (SETQ /0LISTEN (READ)) (QUOTE $P))
+ 			    (RETURN T))				       ;$P IMPLIES PROCEDE
+ 			   ((AND (NOT (ATOM /0LISTEN))		       ;($P EXP) IMPLIES PROCEDE AND OUTPUT (EVAL EXP)
+-				 (EQ (CAR /0LISTEN) (QUOTE P)))
++				 (EQ (CAR /0LISTEN) (QUOTE $P)))
+ 			    (RETURN (EVAL (CADR /0LISTEN))))
+ 			   (THLEVEL (PRINT (EVAL /0LISTEN)))	       ;EVAL LISTENING IF NOT AT TOP LEVEL
+ 			   (T (PRINT (THVAL /0LISTEN THALIST)))))      ;THVAL LISTENING AT TOP LEVEL
+@@ -2492,4 +2492,4 @@
+ 		    THTREE
+ 		    THLEVEL
+ 		    THGENAME
+-		    THINF))
+\ No newline at end of file
++		    THINF))

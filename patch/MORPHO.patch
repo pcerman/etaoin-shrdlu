@@ -1,0 +1,34 @@
+--- code/morpho	1997-09-16 19:16:35.000000000 +0200
++++ SHRDLU/MORPHO	2020-12-17 11:56:15.000000000 +0100
+@@ -20,6 +20,14 @@
+ 	     (AND MOBYREAD (IOC Q))
+ 	CHAR (COND ((EQUAL (TYIPEEK) 24.) (READCH) (ERT) (GO THRU)); "cntrl-x" break
+ ;left over from CMU
++		   ((MEMBER (TYIPEEK) '(17. 26. 4.)) (QUIT))       ; Ctrl-Q, Ctrl-Z, Ctrl-D
++		   ((MEMBER (TYIPEEK) '(19. 7.))     (ERR 'STOP))  ; Ctrl-S, Ctrl-G
++		   ((EQUAL (TYIPEEK) 5)                            ; Ctrl-E eval expression
++			(PROGV '(@V@) (LIST (EVAL (READ)))
++			  (PRINC '>>/ )
++			  (PRIN1 @V@)
++			  (TERPRI))
++			(GO THRU))
+                    ((= (tyipeek) 3.)
+ (or (and mobyread (end-of-file-condition))
+     (bug etaoin: about to read eof)) )
+@@ -87,12 +95,12 @@
+ 		    (GO PUNC)))
+ 	     (AND
+ 	      (OR (AND (EQ CHAR '")
+-		       (NOT ALREADY-BLGING-NEWRD)
+-		       (SETQ NEWWORD (SETQ ALREADY-BLGING-NEWRD T))
++		       (NOT ALREADY-BLGING-NEWWRD)
++		       (SETQ NEWWORD (SETQ ALREADY-BLGING-NEWWRD T))
+ 		       (GO CHAR))
+ 		  (AND (EQ CHAR '")
+-		       ALREaDY-BLGING-NEWRD
+-		       (NOT (SETQ ALREADY-BLGING-NEWRD NIL))
++		       ALREADY-BLGING-NEWWRD
++		       (NOT (SETQ ALREADY-BLGING-NEWWRD NIL))
+ 		       (GO WORD))
+ 								       ;WITHIN THIS "AND" ARE ALL THE CHARACTERS THAT
+ 		  (NUMBERP CHAR)
