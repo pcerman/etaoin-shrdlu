@@ -89,6 +89,8 @@ public class LispException extends Exception {
 
             if (tag == null)
                 return String.format("THROW - %s", msg);
+            else if ("ERROR".equals(tag.getName()))
+                return msg;
             else
                 return String.format("THROW <tag: %s> - %s", tag.getName(), msg);
         }

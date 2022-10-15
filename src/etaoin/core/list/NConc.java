@@ -26,12 +26,23 @@ public class NConc extends Func {
     @Override
     public Value apply(Interpreter in, Environment env, Pair args) throws LispException {
 
-        Pair list = null;
+        Value val = null;
         Pair last = null;
 
         for (int idx = 1; args != null; idx++) {
             Value v = args.getCar();
             args = Lst.safeCdr(args);
+
+            if (args == null) {
+                if (last != null) {
+                    if (Utils.isNil(v))
+                        last.setCdr(null);
+                    else
+                        last.setCdr(v);
+                } else
+                    val = v;
+                break;
+            }
 
             if (Utils.isNil(v))
                 continue;
@@ -41,11 +52,9 @@ public class NConc extends Func {
                 expected("list", idx);
 
             Pair lp = Lst.lastPair(pa);
-            if (lp.getCdr() != null && args != null)
-                expected("proper list", idx);
 
-            if (list == null) {
-                list = pa;
+            if (val == null) {
+                val = pa;
                 last = lp;
             } else {
                 last.setCdr(pa);
@@ -53,7 +62,7 @@ public class NConc extends Func {
             }
         }
 
-        return Utils.checkNull(list);
+        return Utils.checkNull(val);
     }
 
     @Override

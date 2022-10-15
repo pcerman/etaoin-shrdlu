@@ -28,7 +28,7 @@ public class Div extends Func {
         if (!Lst.hasNMoreElms(args, 1))
             requireNMore(1);
 
-        return Lst.fold(new Lst.FoldFun<Num>() {
+        Num n = Lst.fold(new Lst.FoldFun<Num>() {
             int idx = 0;
 
             @Override
@@ -52,6 +52,19 @@ public class Div extends Func {
                 return init;
             }
         }, null, args);
+
+        if (Lst.hasSingleElm(args)) {
+            if (n.getType() == Value.Type.INTEGER) {
+                n = new Num.Int(1 / n.getInt());
+            } else if (n.getType() == Value.Type.FLOAT) {
+                double val = n.getReal();
+                if (val != 1.0 && val != -1.0) {
+                    ((Num.Real) n).setValue(1.0 / val);
+                }
+            }
+        }
+
+        return n;
     }
 
     @Override

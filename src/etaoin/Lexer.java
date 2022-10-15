@@ -17,8 +17,9 @@ import java.io.StringReader;
 
 public class Lexer {
 
+    public static final char ESCAPE_CHAR = '/';
+
     private static final String NON_ATOM_CHAR;
-    private static final String ESCAPE_CHAR;
 
     private java.io.Reader input_reader;
     private int charbuf = -1;
@@ -31,15 +32,12 @@ public class Lexer {
     private int token_col = -1;
 
     static {
-        String nonAtomChar = "()';";
-        String escapeChar = "()';/";
+        String nonAtomChar = "()';`,";
 
         if (Value.HAS_STRING) {
             NON_ATOM_CHAR = nonAtomChar + Value.STR_MARKER;
-            ESCAPE_CHAR = escapeChar + Value.STR_MARKER;
         } else {
             NON_ATOM_CHAR = nonAtomChar;
-            ESCAPE_CHAR = escapeChar;
         }
     }
 
@@ -93,9 +91,7 @@ public class Lexer {
         try {
             close();
         }
-        finally {
-            super.finalize();
-        }
+        catch (Exception ex) {}
     }
 
     public int peek() {
@@ -139,7 +135,7 @@ public class Lexer {
             sb.append((char)ch);
         }
 
-        if (ch < 0 && sb.length() == 0)
+        if (ch < 0 && sb.isEmpty())
             return null;
 
         if (ch == '\r') {
@@ -194,7 +190,7 @@ public class Lexer {
                 break;
 
             if (ch == ';') {
-                if (token.length() == 0) {
+                if (token.isEmpty()) {
                     skipToEol();
                     skipWhitespace();
                     token_row = row;
@@ -204,7 +200,7 @@ public class Lexer {
                 break;
             }
 
-            if (ch == '/') {
+            if (ch == ESCAPE_CHAR) {
                 esc = true;
                 token.append((char) ch);
                 next();
@@ -212,7 +208,7 @@ public class Lexer {
             }
 
             if (Value.HAS_STRING && ch == Value.STR_MARKER) {
-                if (token.length() == 0)
+                if (token.isEmpty())
                 {
                     token.append((char)next());
                     return readString(token);
@@ -221,8 +217,7 @@ public class Lexer {
             }
 
             if (NON_ATOM_CHAR.indexOf(ch) >= 0) {
-
-                if (token.length() == 0) {
+                if (token.isEmpty()) {
                     token.append((char) ch);
                     next();
                 }
@@ -236,7 +231,7 @@ public class Lexer {
             next();
         }
 
-        return token.length() == 0 ? null : token.toString();
+        return token.isEmpty() ? null : token.toString();
     }
 
     private String readString(StringBuilder token) throws LispException {
@@ -262,6 +257,8 @@ public class Lexer {
         if (Character.isAlphabetic(ch))
             return Character.isLowerCase(ch);
 
-        return isWhitespace(ch) || ESCAPE_CHAR.indexOf(ch) >= 0;
+        return ch == ESCAPE_CHAR
+                || isWhitespace(ch)
+                || NON_ATOM_CHAR.indexOf(ch) >= 0;
     }
 }

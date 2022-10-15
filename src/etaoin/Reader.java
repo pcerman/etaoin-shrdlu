@@ -33,9 +33,17 @@ public class Reader {
             "^[+-]?([0-9]*[.][0-9]+([Ee][+-]?[0-9]+)?|[0-9]+[.]?[Ee][+-]?[0-9]+)$"
     );
 
+    private static final String ESCAPE;
+    private static final String UNESCAPE;
+
     private final Lexer lexer;
     private int[] position;
     private int base;
+
+    static {
+        ESCAPE = new String(new char[]{Lexer.ESCAPE_CHAR});
+        UNESCAPE = new String(new char[]{Lexer.ESCAPE_CHAR, Lexer.ESCAPE_CHAR});
+    }
 
     public Reader(java.io.Reader reader) {
         lexer = new Lexer(reader);
@@ -251,11 +259,11 @@ public class Reader {
     }
 
     private String unescape(String token) {
-        if ("/".equals(token))
+        if (ESCAPE.equals(token))
             return token;
 
-        token = token.replace("//", "\001");
-        token = token.replace("/", "");
-        return token.replace("\001", "/");
+        token = token.replace(UNESCAPE, "\001");
+        token = token.replace(ESCAPE, "");
+        return token.replace("\001", ESCAPE);
     }
 }

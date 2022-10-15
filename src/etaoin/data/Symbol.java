@@ -83,14 +83,14 @@ public class Symbol extends Value implements Comparable {
             if (Reader.isNumberLiteral(name, 10)
                 || Reader.isDecimalLiteral(name)
                 || Reader.isFloatingLiteral(name)) {
-                builder.append('/');
+                builder.append(Lexer.ESCAPE_CHAR);
             }
 
             int len = name.length();
             for (int i = 0; i < len; i++) {
                 Character ch = name.charAt(i);
                 if (Lexer.isEscapeChar(ch))
-                    builder.append('/');
+                    builder.append(Lexer.ESCAPE_CHAR);
                 builder.append(ch);
             }
         } else

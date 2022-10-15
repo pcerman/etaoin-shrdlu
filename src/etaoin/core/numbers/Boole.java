@@ -33,15 +33,15 @@ public class Boole extends Func {
         if (op == null || op.getValue() < 0 || op.getValue() > 15)
             expected("fixnum from range <0, 15>", 1);
 
-        Num.Int n1 = Utils.getIntArg(args, 0);
+        Num.Int n1 = Utils.getIntArg(args, 1);
         if (n1 == null)
             expected("fixnum", 2);
 
-        Num.Int n2 = Utils.getIntArg(args, 0);
+        Num.Int n2 = Utils.getIntArg(args, 2);
         if (n2 == null)
             expected("fixnum", 3);
 
-        long x = n2.getValue();
+        long x = n1.getValue();
         long y = n2.getValue();
 
         // if op is in binary form abcd then boolean operation is:

@@ -69,9 +69,15 @@ public class Status extends Func {
                             in.Status.read_hook = null;
                         } else {
                             Func fn = in.getFunction(v, env);
-                            if (fn == null)
-                                expected("function");
+                            if (fn == null) {
+                                v = in.eval(v, env);
 
+                                if (!Utils.isNil(v)) {
+                                    fn = in.getFunction(v, env);
+                                    if (fn == null)
+                                        expected("function");
+                                }
+                            }
                             in.Status.read_hook = fn;
                         }
                     }
@@ -109,7 +115,7 @@ public class Status extends Func {
                     case "TOPLEVEL" -> {
                         if (!Lst.hasTwoElms(args))
                             requireN(2);
-                        in.Status.toplevel = Lst.nth(args, 1);
+                        in.Status.toplevel = in.eval(Lst.nth(args, 1), env);
                     }
 
                     case "BREAK-ON-ERROR" -> {
@@ -177,6 +183,10 @@ public class Status extends Func {
 
                 case "BREAK-ON-ERROR" -> {
                     return in.getBool(in.Status.break_on_error);
+                }
+
+                case "OS-NAME" -> {
+                    return new Str(System.getProperty("os.name"));
                 }
             }
         }

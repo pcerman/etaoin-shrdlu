@@ -32,6 +32,6 @@ public class ProgN extends Func {
 
     @Override
     public Func.FunctionType getFunctionType() {
-        return Func.FunctionType.SUBR;
+        return Func.FunctionType.LSUBR;
     }
 }

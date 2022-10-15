@@ -24,18 +24,17 @@ public class Error extends Func {
 
     @Override
     public Value apply(Interpreter in, Environment env, Pair args) throws LispException {
-        if (Lst.hasNMoreElms(args, 2))
-            requireN(0, 1);
+        if (Lst.hasNMoreElms(args, 3))
+            requireN(0, 2);
 
-        Value exp = Lst.nth(args, 0);
+        Value msg = Lst.nth(args, 0);
+        Value exp = Lst.nth(args, 1);
 
-        if (exp == null) {
-            exp = Constant.Nil;
-            throw new LispException.Throw(new Pair(Num.Int._one, exp), in.ERRSET);
-        } else {
-            String msg = exp == null ? "null" : exp.toString(false);
-            throw new LispException(msg);
-        }
+        String txt = Utils.isNil(msg) ? "error" : msg.toString(false);
+        if (!Utils.isNil(exp))
+            txt += ": " + exp.toString(false);
+
+        throw new LispException.Throw(new Pair(Num.Int.zero, new Str(txt)), in.getSymbol("ERROR"));
     }
 
     @Override

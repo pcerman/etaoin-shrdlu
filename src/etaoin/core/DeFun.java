@@ -115,6 +115,6 @@ public class DeFun extends Func {
 
     @Override
     public FunctionType getFunctionType() {
-        return FunctionType.FEXPR;
+        return FunctionType.FSUBR;
     }
 }

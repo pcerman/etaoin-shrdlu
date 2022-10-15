@@ -81,7 +81,9 @@ public class Etaoin {
         if (file.exists()) {
             in.setTraceLevel(0);
 
-            Reader loader = new Reader("(load `.etaoinrc`)");
+            String load_rc = String.format("(load %s.etaoinrc%s)",
+                                           Value.STR_MARKER, Value.STR_MARKER);
+            Reader loader = new Reader(load_rc);
             try {
                 in.eval(in.read(loader, env), env);
             }

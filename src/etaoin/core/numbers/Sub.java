@@ -28,7 +28,7 @@ public class Sub extends Func {
         if (!Lst.hasNMoreElms(args, 1))
             requireNMore(1);
 
-        return Lst.fold(new Lst.FoldFun<Num>() {
+        Num n = Lst.fold(new Lst.FoldFun<Num>() {
             int idx = 0;
 
             @Override
@@ -52,6 +52,11 @@ public class Sub extends Func {
                 return init;
             }
         }, null, args);
+
+        if (Lst.hasSingleElm(args))
+            n.neg();
+
+        return n;
     }
 
     @Override

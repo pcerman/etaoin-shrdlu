@@ -543,8 +543,8 @@ public final class Interpreter {
     public void setCharPosition(Environment env) {
         int charPos = Etaoin.terminal.getOutPosition();
 
-        env.setValue(CHARPOS, new Num.Int(charPos));
-        env.setValue(CHRCT, new Num.Int(Math.max(Terminal.WIDTH - charPos, 0)));
+        CHARPOS.setValue(new Num.Int(charPos));
+        CHRCT.setValue(new Num.Int(Math.max(Terminal.WIDTH - charPos, 0)));
     }
 
     public void callBreak(Environment env, String msg) throws LispException {

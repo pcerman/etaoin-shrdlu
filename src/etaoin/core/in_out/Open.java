@@ -109,7 +109,7 @@ public class Open extends Func {
                     if (Utils.isNil(val))
                         return init;
 
-                    if (init.length() > 0)
+                    if (!init.isEmpty())
                         init.append('/');
 
                     Symbol sym = Utils.getSymb(val);
