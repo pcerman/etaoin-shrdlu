@@ -200,6 +200,13 @@ public class Lexer {
                 break;
             }
 
+            if (ch == ',') {
+                token.append((char) next());
+                if (peek() == '@')
+                    token.append((char) next());
+                break;
+            }
+
             if (ch == ESCAPE_CHAR) {
                 esc = true;
                 token.append((char) ch);

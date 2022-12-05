@@ -88,6 +88,21 @@ public class Reader {
                 if (val == null)
                     error("quote value is expected");
                 return Lst.create(in.QUOTE, val);
+            case "`":
+                val = readForm(in);
+                if (val == null)
+                    error("backquote value is expected");
+                return Lst.create(in.B_QUOTE, val);
+            case ",":
+                val = readForm(in);
+                if (val == null)
+                    error("unquote value is expected");
+                return Lst.create(in.UNQUOTE, val);
+            case ",@":
+                val = readForm(in);
+                if (val == null)
+                    error("splice-quote value is expected");
+                return Lst.create(in.SPLICE, val);
             case "(":
                 return readList(in);
             case ")", ".":

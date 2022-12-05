@@ -38,6 +38,9 @@ public final class Interpreter {
 
     public final Symbol T;
     public final Symbol QUOTE;
+    public final Symbol B_QUOTE;
+    public final Symbol UNQUOTE;
+    public final Symbol SPLICE;
 
     public final Symbol LAMBDA;
 
@@ -98,6 +101,9 @@ public final class Interpreter {
         T.setValue(T);
 
         QUOTE  = getSymbol("QUOTE", true);
+        B_QUOTE = getSymbol("BACKQUOTE", true);
+        UNQUOTE = getSymbol("UNQUOTE", true);
+        SPLICE  = getSymbol("SPLICE-UNQUOTE", true);
         LAMBDA = getSymbol("LAMBDA");
 
         SYMBOL = getSymbol("SYMBOL");
@@ -301,6 +307,12 @@ public final class Interpreter {
                     return Lst.nth(p, 1);
                 }
 
+                if (p.getCar() == B_QUOTE) {
+                    if (!Lst.hasTwoElms(p))
+                        error("BACKQUOTE - expected one arg");
+                    return backquote(Lst.nth(p, 1), env);
+                }
+
                 Func fn = getFunction(p.getCar(), env);
                 if (fn == null) {
                     if (Status.break_on_error)
@@ -315,10 +327,7 @@ public final class Interpreter {
                     case MACRO:
                         val = fn.applyFn(this, env, p);
                         break;
-                    case EXPR:
-                    case LEXPR:
-                    case SUBR:
-                    case LSUBR:
+                    case EXPR, LEXPR, SUBR, LSUBR:
                         return fn.applyFn(this, env, (Pair)eval_ast(p.getCdr(), env));
                     case FEXPR, FSUBR:
                         return fn.applyFn(this, env, (Pair) p.getCdr());
@@ -364,6 +373,132 @@ public final class Interpreter {
             Etaoin.terminal.printf("  ", traceLevel);
         Etaoin.terminal.printf("%s == %s", fn.getName(), Value.toString(arg));
         Etaoin.terminal.println();
+    }
+
+    public Value expand_once(Environment env, Value val) throws LispException {
+        if (val instanceof Pair) {
+            Pair p = (Pair) val;
+            var fn = getFunction(p.getCar(), env);
+            if (fn != null && fn.getFunctionType() == Func.FunctionType.MACRO) {
+                val = fn.applyFn(this, env, p);
+            }
+        }
+
+        return val;
+    }
+
+    public Value expand_all(Environment env, Value val) throws LispException {
+        for (;;)
+        {
+            Value v = expand_once(env, val);
+            if (v == val) {
+                if (val instanceof Pair) {
+                    Pair p = (Pair) val;
+
+                    Pair list = Lst.create(p.getCar());
+                    Pair last = list;
+
+                    val = p.getCdr();
+
+                    while (val instanceof Pair) {
+                        p = (Pair) val;
+                        val = p.getCdr();
+
+                        v = expand_all(env, p.getCar());
+
+                        p = Lst.create(v);
+                        last.setCdr(p);
+                        last = p;
+                    }
+
+                    if (val != null) {
+                        last.setCdr(expand_all(env, val));
+                    }
+
+                    val = list;
+                }
+                break;
+            }
+
+            val = v;
+        }
+
+        return val;
+    }
+
+    private Value backquote(Value val, Environment env) throws LispException {
+        if (val instanceof Pair) {
+            Pair p = (Pair) val;
+
+            if (p.getCar() == UNQUOTE) {
+                if (!Lst.hasTwoElms(p))
+                    error("UNQUOTE - expected one arg");
+                return eval(Lst.nth(p, 1), env);
+            }
+            if (p.getCar() == SPLICE) {
+                error("SPLICE-UNQUOTE - invalid context within backquote");
+            } else {
+                Pair list = null;
+                Pair last = null;
+
+                while (val instanceof Pair) {
+                    p = (Pair) val;
+                    val = p.getCdr();
+
+                    Value v = p.getCar();
+
+                    if (p.getCar() instanceof Pair) {
+                        Pair fst = (Pair) p.getCar();
+
+                        if (fst.getCar() == UNQUOTE) {
+                            if (!Lst.hasTwoElms(fst)) {
+                                error("UNQUOTE - expected one arg");
+                            }
+                            v = eval(Lst.nth(fst, 1), env);
+                        } else if (fst.getCar() == SPLICE) {
+                            if (!Lst.hasTwoElms(fst)) {
+                                error("SPLICE-UNQUOTE - expected one arg");
+                            }
+                            v = eval(Lst.nth(fst, 1), env);
+                            if (v instanceof Pair) {
+                                var lcdr = new Ref<Value>(null);
+                                v = Lst.copy((Pair) v, lcdr);
+
+                                if (list == null) {
+                                    list = (Pair) v;
+                                    last = Lst.lastPair(list);
+                                } else {
+                                    last.setCdr(v);
+                                    last = Lst.lastPair(last);
+                                }
+                                last.setCdr(null);
+                                v = lcdr.val;
+                            }
+
+                        } else {
+                            v = backquote(fst, env);
+                        }
+                    }
+
+                    if (v != null) {
+                        if (list == null) {
+                            list = Lst.create(v);
+                            last = list;
+                        } else {
+                            p = last;
+                            last = Lst.create(v);
+                            p.setCdr(last);
+                        }
+                    }
+                }
+
+                if (val != null)
+                    last.setCdr(backquote(val, env));
+
+                return list;
+            }
+        }
+        return val;
     }
 
     private Value eval_ast(Value val, Environment env) throws LispException {

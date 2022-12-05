@@ -14,20 +14,20 @@
 ;;; Functions to report the movement of the hand and blocks.
 
 (DEFUN MOVETO (X Y Z)
-  (PRINC `  ==  MOVING HAND TO `)
+  (PRINC |  ==  MOVING HAND TO |)
   (PRINC (LIST X Y Z))
   (TERPRI))
 
 (DEFUN GRASP (X)
-  (PRINC `  ==  GRASPING BLOCK `)
+  (PRINC |  ==  GRASPING BLOCK |)
   (PRINC X)
   (TERPRI))
 
 (DEFUN UNGRASP NIL
-  (PRINC `  ==  LETTING GO`)
+  (PRINC |  ==  LETTING GO|)
   (TERPRI))
 
 (DEFUN BLINK (X)
-  (PRINC `  ==  CHOOSING BLOCK `)
+  (PRINC |  ==  CHOOSING BLOCK |)
   (PRINC X)
   (TERPRI))

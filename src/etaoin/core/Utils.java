@@ -163,6 +163,7 @@ public class Utils {
         in.addFunction(new AndOr(AndOr.FType.AND));
         in.addFunction(new AndOr(AndOr.FType.OR));
         in.addFunction(new Cond());
+        in.addFunction(new If());
         in.addFunction(new Comment());
         in.addFunction(new Prog2());
         in.addFunction(new ProgN());
@@ -172,6 +173,8 @@ public class Utils {
         in.addFunction(new Lambda(in.LAMBDA_MACRO), in.LAMBDA_MACRO);
         in.addFunction(new Arg());
         in.addFunction(new Listify());
+        in.addFunction(new Expand(Expand.FType.EXPAND));
+        in.addFunction(new Expand(Expand.FType.EXPAND_ALL));
         in.addFunction(new Eval(Eval.FType.EVAL));
         in.addFunction(new Eval(Eval.FType.EVAL_BEFORE));
         in.addFunction(new Eval(Eval.FType.EVAL_AFTER));
