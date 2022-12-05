@@ -17,9 +17,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class Etaoin {
 
+    public static final String VERSION = "ETAOIN-0.2";
     public static final Terminal terminal;
 
     private static final long START_NANO_TIME;
@@ -58,11 +62,119 @@ public class Etaoin {
         }
     }
 
+    private static final Pattern OPTION = Pattern.compile("^(--?[^-=][^=]*)");
+    private static final Pattern OPTION_VAL = Pattern.compile("=(.*)$");
+
+    private static final List<String> options = new ArrayList<String>();
+    private static final List<String> data = new ArrayList<String>();
+
+    private static String getOption(String arg) {
+        if (arg == null)
+            return null;
+
+        var m = OPTION.matcher(arg);
+        return m.find() ? m.group(1) : null;
+    }
+
+    private static int search(String[] arr, String elm) {
+        for (int i=0; i < arr.length; i++) {
+            if (elm.compareTo(arr[i]) == 0)
+                return i;
+        }
+        return -1;
+    }
+
+    private static boolean parseArguments(String[] args, String[] allowedOptions) {
+        for (int i=0; i < args.length; i++) {
+            var arg = args[i];
+
+            if ("--".compareTo(arg) == 0) {
+                for (int j=i+1; j < args.length; j++) {
+                    data.add(args[j]);
+                }
+                return true;
+            }
+
+            var opt = getOption(arg);
+            if (opt != null && !opt.isBlank()) {
+                if (search(allowedOptions, opt) < 0) {
+                    terminal.println("unknown option: " + opt);
+                    return false;
+                }
+                options.add(arg);
+            } else if (arg.startsWith("-")) {
+                terminal.println("wrong option: " + arg);
+                return false;
+            } else
+                data.add(arg);
+        }
+
+        return true;
+    }
+
+    private static boolean hasOption(String option) {
+        return options.stream().anyMatch(opt -> (option.compareTo(getOption(opt)) == 0));
+    }
+
+    private static boolean hasAnyOption(String... opts) {
+        for (var opt : opts) {
+            if (hasOption(opt))
+                return true;
+        }
+        return false;
+    }
+
+    private static String getValue(String option) {
+        var m = OPTION_VAL.matcher(option);
+        return m.find() ? m.group(1) : "";
+    }
+
+    private static String optValue(String option) {
+        var fopt = options.stream().filter(opt -> (option.compareTo(getOption(opt)) == 0)).findFirst();
+        if (fopt.isPresent()) {
+            return getValue(fopt.get());
+        }
+        return null;
+    }
+
+    private static void evalString(Interpreter in, Environment env, String line) throws Exception {
+        if (line == null || line.isBlank())
+            return;
+
+        Reader rdr = new Reader(line);
+
+        for (Value v = in.read(rdr, env); v != null; v = in.read(rdr, env)) {
+            in.setTraceLevel(0);
+            in.eval(v, env);
+        }
+    }
+
     public static void main(String[] args) throws Exception {
 
-        terminal.println("etaoin 0.1");
+        if (!parseArguments(args, new String[] {"-h", "-help", "--help", "-init", "-e", "-f", "-q", "-v"}))
+            return;
 
-        Interpreter in = new Interpreter();
+        if (hasAnyOption("-h", "-help", "--help")) {
+            terminal.println("use: etaoin <option>* <-->? <arg>*\n");
+            terminal.println("where <option> is:");
+            terminal.println("      -h, -help, --help    print this help");
+            terminal.println("      -init=<file>?        load initialization file (default: .etaoinrc)");
+            terminal.println("      -e=<expr>            evaluate expression");
+            terminal.println("      -f=<file>            load file");
+            terminal.println("      -q                   be quiet");
+            terminal.println("      -v                   print version and exit");
+            return;
+        }
+
+        if (hasOption("-v")) {
+            terminal.println(VERSION);
+            return;
+        }
+
+        if (!hasOption("-q"))
+            terminal.println(VERSION);
+
+        Interpreter in = new Interpreter(data.toArray(String[]::new));
 
         var etaoin = new Etaoin();
         etaoin.loadInit(in);
@@ -77,19 +189,46 @@ public class Etaoin {
         env.setValue(in.STAR2, in.STAR2);
         env.setValue(in.STAR3, in.STAR3);
 
-        File file = new File(".etaoinrc");
-        if (file.exists()) {
-            in.setTraceLevel(0);
+        var rc = optValue("-init");
 
-            String load_rc = String.format("(load %s.etaoinrc%s)",
-                                           Value.STR_MARKER, Value.STR_MARKER);
-            Reader loader = new Reader(load_rc);
-            try {
-                in.eval(in.read(loader, env), env);
+        String rc_file = null;
+        if (rc == null)
+            rc_file = ".etaoinrc";
+        else if (!rc.isBlank())
+            rc_file = rc;
+
+        try {
+            if (rc_file != null && (new File(rc_file)).exists()) {
+                String load_rc = String.format("(load %s%s%s)", Value.STR_MARKER, rc_file, Value.STR_MARKER);
+                evalString(in, env, load_rc);
             }
-            catch (Exception ex) {
-                terminal.println("\nERROR: " + ex.getMessage());
+
+            for (var opt : options) {
+                switch (getOption(opt)) {
+                    case "-e": {
+                        String val = getValue(opt);
+                        if (val != null && !val.isBlank())
+                            evalString(in, env, val);
+                        break;
+                    }
+
+                    case "-f": {
+                        String val = getValue(opt);
+                        if (val != null && !val.isBlank()) {
+                            String exp = String.format("(load %s%s%s)", Value.STR_MARKER, val, Value.STR_MARKER);
+                            evalString(in, env, exp);
+                        }
+                        break;
+                    }
+                }
             }
+        }
+        catch (LispException.Quit ex) {
+            return;
+        }
+        catch (Exception ex) {
+            terminal.println("\nERROR: " + ex.getMessage());
+            return;
         }
 
         int exp_cnt = 0;

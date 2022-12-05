@@ -20,6 +20,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 public class Port extends Value {
 
@@ -29,7 +31,7 @@ public class Port extends Value {
     private final File file;
 
     private Reader reader;
-    private FileWriter writer;
+    private OutputStreamWriter writer;
 
     public Port(PortType type, File file, FileReader reader) {
         this.portType = type;
@@ -45,12 +47,26 @@ public class Port extends Value {
         this.writer = writer;
     }
 
+    public Port(PortType type, InputStreamReader reader) {
+        this.portType = type;
+        this.file = null;
+        this.reader = new Reader(reader);
+        this.writer = null;
+    }
+
+    public Port(PortType type, OutputStreamWriter writer) {
+        this.portType = type;
+        this.file = null;
+        this.reader = null;
+        this.writer = writer;
+    }
+
     public PortType getPortType() {
         return portType;
     }
 
     public String getFilename() {
-        return file.getPath();
+        return file != null ? file.getPath() : "";
     }
 
     public boolean close() {

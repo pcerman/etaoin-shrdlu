@@ -27,6 +27,8 @@ public final class Interpreter {
     private final HashMap<String, Symbol> symbols;
     private int traceLevel = 0;
 
+    public final String[] Arguments;
+
     public final List<Func> Traced;
     public final List<Func> Before;
     public final List<Func> After;
@@ -83,7 +85,9 @@ public final class Interpreter {
 
     public final Symbol CUREXP;
 
-    public Interpreter() {
+    public Interpreter(String[] args) {
+
+        Arguments = args;
 
         startMilliTime = System.currentTimeMillis();
 
@@ -99,11 +103,11 @@ public final class Interpreter {
         T = getSymbol("T", true);
         T.setValue(T);
 
-        QUOTE  = getSymbol("QUOTE", true);
+        QUOTE   = getSymbol("QUOTE", true);
         B_QUOTE = getSymbol("BACKQUOTE", true);
         UNQUOTE = getSymbol("UNQUOTE", true);
         SPLICE  = getSymbol("SPLICE-UNQUOTE", true);
-        LAMBDA = getSymbol("LAMBDA");
+        LAMBDA  = getSymbol("LAMBDA");
 
         SYMBOL = getSymbol("SYMBOL");
         FIXNUM = getSymbol("FIXNUM");
@@ -173,6 +177,7 @@ public final class Interpreter {
         Utils.initPredFunc(this);
         Utils.initSymbFunc(this);
         Utils.initInOutFunc(this);
+        Utils.initSysFunc(this);
     }
 
     public long getCurrentMilliTime() {

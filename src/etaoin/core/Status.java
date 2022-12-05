@@ -149,7 +149,7 @@ public class Status extends Func {
                 }
 
                 case "LISPVERSION" -> {
-                    return in.getSymbol("ETAOIN-1.0");
+                    return in.getSymbol(etaoin.Etaoin.VERSION);
                 }
 
                 case "CXR" -> {

@@ -19,6 +19,7 @@ import etaoin.core.mapping.*;
 import etaoin.core.numbers.*;
 import etaoin.core.predicates.*;
 import etaoin.core.symbol.*;
+import etaoin.core.system.*;
 import etaoin.data.*;
 
 public class Utils {
@@ -431,5 +432,11 @@ public class Utils {
         in.addFunction(new Open(Open.FType.OPENA));
         in.addFunction(new Close());
         in.addFunction(new Load());
+    }
+
+    public static void initSysFunc(Interpreter in) {
+
+        in.addFunction(new AppArgs());
+        in.addFunction(new RunCommand());
     }
 }
