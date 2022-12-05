@@ -1,5 +1,14 @@
---- code/blockl	1997-09-16 19:16:33.000000000 +0200
-+++ SHRDLU/BLOCKL	2020-12-26 08:58:13.000000000 +0100
+--- code/blockl
++++ SHRDLU/BLOCKL
+@@ -19,7 +19,7 @@
+ 	     (AND (MEMQ NIL
+ 			(MAPCAR (QUOTE (LAMBDA (X Y)
+ 					       (AND (GREATERP X -1)
+-						    (GREATERP 1201 (PLUS X Y))
++						    (GREATERP 01201 (PLUS X Y))
+ 						    T)))
+ 				LOC
+ 				SIZE))
 @@ -52,12 +52,12 @@
  (DEFUN EV NIL (OR NOMEM $?EV))
  (DEFUN FINDSPACE
@@ -9,13 +18,14 @@
         (SETQ OBJ (LISTIFY OBJ))
         (AND (MEMQ SURF OBJ) (RETURN NIL))
         (COND ((EQ SURF (QUOTE :TABLE)) (SETQ XYMIN (QUOTE (0 0)))
- 				       (SETQ XYMAX (QUOTE (1200 1200)))
+-				       (SETQ XYMAX (QUOTE (1200 1200)))
 -				       (SETQ LEVEL 0)
++				       (SETQ XYMAX (QUOTE (01200 01200)))
 +				       (SETQ F-LEVEL 0)
  				       (GO ON))
  	     ((SETQ X (ATAB SURF))))
         (COND
-@@ -79,7 +79,7 @@
+@@ -79,16 +79,16 @@
  	 (SETQ XYMIN (LIST (CAADR X) (CADADR X)))
  	 (SETQ XYMAX (LIST (PLUS (CAADDR X) (CAADR X))
  			   (PLUS (CADR (CADDR X)) (CADADR X))))
@@ -24,15 +34,19 @@
  	((SETQ X1 (DIV2 (CAR SIZE)))
  	 (SETQ Y1 (DIV2 (CADR SIZE)))
  	 (SETQ XYMAX
-@@ -87,7 +87,7 @@
- 		     (MIN 1200 (SUB1 (PLUS (CADR (CADDR X)) (CADADR X) Y1)))))
+-	       (LIST (MIN 1200 (SUB1 (PLUS (CAADDR X) (CAADR X) X1)))
+-		     (MIN 1200 (SUB1 (PLUS (CADR (CADDR X)) (CADADR X) Y1)))))
++	       (LIST (MIN 01200 (SUB1 (PLUS (CAADDR X) (CAADR X) X1)))
++		     (MIN 01200 (SUB1 (PLUS (CADR (CADDR X)) (CADADR X) Y1)))))
  	 (SETQ XYMIN (LIST (MAX 0 (DIFFERENCE (CAADR X) X1))
  			   (MAX 0 (DIFFERENCE (CADADR X) Y1))))
 -	 (SETQ LEVEL (PLUS (CADDR (CADR X)) (CADDR (CADDR X))))))
+-  ON   (SETQ N 10)
 +	 (SETQ F-LEVEL (PLUS (CADDR (CADR X)) (CADDR (CADDR X))))))
-   ON   (SETQ N 10)
++  ON   (SETQ N 010)
         (SETQ X1 (DIFFERENCE (CAR XYMAX) (CAR XYMIN)))
         (SETQ Y1 (DIFFERENCE (CADR XYMAX) (CADR XYMIN)))
+   GO   (COND ((ZEROP (SETQ N (SUB1 N))) (RETURN NIL))
 @@ -97,7 +97,7 @@
  					       (REMAINDER (ABSVAL (RANDOM)) X1))
  					 (PLUS (CADR XYMIN)
@@ -54,11 +68,65 @@
  			    ((ERT FINDSPACE /-- TYPE))))))))
  
  (DEFUN GOAL
-@@ -286,6 +286,7 @@
+@@ -179,7 +179,7 @@
+ 	     ATABLE))))
+ 	 (RETURN NIL)))
+   GO   (COND ((= (SETQ GROW (MIN (CAAR XL) (CAAR XH) (CAAR YL) (CAAR YH)))
+-		  2000)
++		  02000)
+ 	      (RETURN (LIST (LIST (DIFFERENCE (CAR LOC) (CADAR XL))
+ 				  (DIFFERENCE (CADR LOC) (CADAR YL)))
+ 			    (LIST (PLUS (CAR LOC) (CADAR XH))
+@@ -191,7 +191,7 @@
+ 						  ((OR (NULL (CADAR X))
+ 						       (MEMQ (CADAR X)
+ 							     (EVAL Y)))
+-						   (RPLACA X (LIST 2000
++						   (RPLACA X (LIST 02000
+ 								   (CAAR X))))
+ 						  ((SET Z (CONS (CADAR X)
+ 								(EVAL Z)))
+@@ -271,7 +271,7 @@
+ 			(GREATERP (PLUS (CADDR X)
+ 					(CADDR (CADR SURF))
+ 					(CADDR (CADDR SURF)))
+-				  501))
++				  0501))
+ 		    (SETQ LIST (CDR LIST))
+ 		    (GO GO))
+ 		   ((RETURN (CAR X))))))
+@@ -284,8 +284,9 @@
+ 		       (GREATERP (CADAAR LIST) (CADR SIZE))))
+ 	      (CONS (CAR LIST) (PACKORD X SIZE (CDR LIST))))
  	     ((CONS (LIST SIZE X) LIST))))
- (DEFUN SIZE (X) (COND ((EQ X (QUOTE :BOX)) (QUOTE (400 400 300)))
- 		      ((EQ X (QUOTE :TABLE)) (QUOTE (1200 1200 1200)))
+-(DEFUN SIZE (X) (COND ((EQ X (QUOTE :BOX)) (QUOTE (400 400 300)))
+-		      ((EQ X (QUOTE :TABLE)) (QUOTE (1200 1200 1200)))
++(DEFUN SIZE (X) (COND ((EQ X (QUOTE :BOX)) (QUOTE (0400 0400 0300)))
++		      ((EQ X (QUOTE :TABLE)) (QUOTE (01200 01200 01200)))
 +		      ((EQ X (QUOTE :HAND)) (QUOTE (0 0 0)))
  		      ((ATOM X) (CADDR (ATAB X)))
  		      (X)))
  
+@@ -331,7 +332,7 @@
+ (DEFUN TFIND (X Y) (PROG (Z)
+ 			 (OR (SETQ Z (GET X (QUOTE HISTORY))) (RETURN NIL))
+ 		    UP	 (COND ((NOT (GREATERP (CAAR Z)
+-					       (OR (END? Y) 77777)))
++					       (OR (END? Y) 077777)))
+ 				(RETURN Z))
+ 			       ((SETQ Z (CDR Z)) (GO UP)))))
+ 
+@@ -339,10 +340,10 @@
+        (EV TIME)
+        (COND ((IMPERF? TIME)
+ 	      (NOT (OR (LESSP (GET EV (QUOTE END)) (OR (START? TIME) -1))
+-		       (LESSP (OR (END? TIME) 777777)
++		       (LESSP (OR (END? TIME) 0777777)
+ 			      (GET EV (QUOTE START))))))
+ 	     ((NOT (OR (LESSP (GET EV (QUOTE START)) (OR (START? TIME) -1))
+-		       (LESSP (OR (END? TIME) 777777)
++		       (LESSP (OR (END? TIME) 0777777)
+ 			      (GET EV (QUOTE END))))))))
+ 
+ 
+\ No newline at end of file

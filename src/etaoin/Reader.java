@@ -25,12 +25,16 @@ public class Reader {
             "^[+-]?0[0-7]*$"
     );
 
+    private static final Pattern BAD_OCTAL_LIT_RE = Pattern.compile(
+            "^[+-]?0[0-7]*([89][0-9]*[.]?|[.])$"
+    );
+
     private static final Pattern DECIMAL_LIT_RE = Pattern.compile(
-            "^[+-]?[0-9]+[.]$"
+            "^[+-]?([1-9][0-9]*|0+)[.]?$"
     );
 
     private static final Pattern FLOAT_LIT_RE = Pattern.compile(
-            "^[+-]?([0-9]*[.][0-9]+([Ee][+-]?[0-9]+)?|[0-9]+[.]?[Ee][+-]?[0-9]+)$"
+            "^[+-]?([0-9]+([.][0-9]*)?[Ee][+-]?[0-9]+|([0-9]*[.][0-9]+)([Ee][+-]?[0-9]+)?)$"
     );
 
     private static final String ESCAPE;
@@ -38,7 +42,6 @@ public class Reader {
 
     private final Lexer lexer;
     private int[] position;
-    private int base;
 
     static {
         ESCAPE = new String(new char[]{Lexer.ESCAPE_CHAR});
@@ -47,24 +50,14 @@ public class Reader {
 
     public Reader(java.io.Reader reader) {
         lexer = new Lexer(reader);
-        base = 8;
     }
 
     public Reader(String input) {
         lexer = new Lexer(input);
-        base = 8;
     }
 
     public int[] getPosition() {
         return position;
-    }
-
-    public int getBase() {
-        return base;
-    }
-
-    public void setBase(int base) {
-        this.base = base;
     }
 
     public void error(String message) throws LispException {
@@ -112,16 +105,16 @@ public class Reader {
 
                 if (isStringToken(token, rval))
                     return rval.val;
-                if (isRadixLiteral(token, rval))
-                    return rval.val;
-                if (isOctalLiteral(token))
-                    return new Num.Int(token, 8);
                 if (isDecimalLiteral(token))
                     return new Num.Int(token);
-                if (isNumberLiteral(token, base))
-                    return new Num.Int(token, base);
+                if (isOctalLiteral(token))
+                    return new Num.Int(token, 8);
                 if (isFloatingLiteral(token))
                     return new Num.Real(token);
+                if (isRadixLiteral(token, rval))
+                    return rval.val;
+                if (isBadOctalLiteral(token))
+                    error("wrong octal number: " + token);
                 return in.getSymbol(unescape(token));
         }
     }
@@ -249,6 +242,10 @@ public class Reader {
 
     public static boolean isOctalLiteral(String token) {
         return OCTAL_LIT_RE.matcher(token).matches();
+    }
+
+    public static boolean isBadOctalLiteral(String token) {
+        return BAD_OCTAL_LIT_RE.matcher(token).matches();
     }
 
     public static boolean isDecimalLiteral(String token) {

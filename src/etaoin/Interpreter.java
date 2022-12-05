@@ -51,7 +51,6 @@ public final class Interpreter {
     public final Symbol LIST;
     public final Symbol RANDOM;
     public final Symbol BASE;
-    public final Symbol IBASE;
 
     public final Symbol EXPR;
     public final Symbol FEXPR;
@@ -113,7 +112,6 @@ public final class Interpreter {
         LIST   = getSymbol("LIST");
         RANDOM = getSymbol("RANDOM");
         BASE   = getSymbol("BASE");
-        IBASE  = getSymbol("IBASE");
 
         EXPR  = getSymbol("EXPR");
         FEXPR = getSymbol("FEXPR");
@@ -270,21 +268,15 @@ public final class Interpreter {
                     return (int) base;
             }
         }
-
-        return 8;
-    }
-
-    public int getInpBase(Environment env) {
-        return getBase(env, IBASE);
+        return 0;
     }
 
     public int getOutBase(Environment env) {
-        return getBase(env, BASE);
+        int base = getBase(env, BASE);
+        return base > 0 ? base : Value.NUM_BASE;
     }
 
     public Value read(Reader rdr, Environment env) throws Exception {
-        rdr.setBase(getInpBase(env));
-
         Value val = rdr.readForm(this);
         if (val == null)
             return val;

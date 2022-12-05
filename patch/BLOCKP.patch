@@ -1,5 +1,5 @@
---- code/blockp	1997-09-16 19:16:33.000000000 +0200
-+++ SHRDLU/BLOCKP	2020-12-28 22:49:32.000000000 +0100
+--- code/blockp
++++ SHRDLU/BLOCKP
 @@ -1,11 +1,11 @@
  
 -################################################################
@@ -19,7 +19,45 @@
  
  
  (DEFPROP TA-AT
-@@ -501,7 +501,7 @@
+@@ -242,7 +242,7 @@
+ 					     (TCENT (QUOTE (0 0 0)) (CADDR X))))
+ 			       (LIST (CAADDR X)
+ 				     (CADADR (CDR X))
+-				     (DIFFERENCE 1000 (CADDR Y)))
++				     (DIFFERENCE 01000 (CADDR Y)))
+ 			       (CAR X))
+ 			(RETURN Y))))
+     (THGOAL (#AT $?X $_W))
+@@ -269,9 +269,9 @@
+ 	 (THCONSE (Y LOC)
+ 		  (#MOVEHAND2 $?Y)
+ 		  (COND ((EQUAL $?Y HANDAT) (THSUCCEED THEOREM))
+-			((AND (LESSP 37 (CAR $?Y) 1141)
+-			      (LESSP -1 (CADR $?Y) 1141)
+-			      (LESSP -1 (CADDR $?Y) 1001))))
++			((AND (LESSP 037 (CAR $?Y) 01141)
++			      (LESSP -1 (CADR $?Y) 01141)
++			      (LESSP -1 (CADDR $?Y) 01001))))
+ 		  (THVSETQ $_LOC HANDAT)
+ 		  (THSETQ HANDAT $?Y)
+ 		  (THSETQ THTIME (ADD1 THTIME))
+@@ -462,7 +462,7 @@
+ 	 (THCONSE ((WHY (EV)) EV)
+ 		  (#RAISEHAND)
+ 		  (MEMORY)
+-		  (THGOAL (#MOVEHAND $E (LIST (CAR HANDAT) (CADR HANDAT) 1000))
++		  (THGOAL (#MOVEHAND $E (LIST (CAR HANDAT) (CADR HANDAT) 01000))
+ 			  (THNODB)
+ 			  (THUSE TC-MOVEHAND))
+ 		  (MEMOREND (#RAISEHAND $?EV)))
+@@ -495,13 +495,13 @@
+   (#STACKUP $?X)
+   (OR (LESSP (APPLY (QUOTE PLUS)
+ 		    (MAPCAR (QUOTE (LAMBDA (X) (CADDR (SIZE X)))) $?X))
+-	     1201)
++	     01201)
+       (NOT (DPRINT2 (QUOTE TOO/ HIGH/,))))
+   (THCOND
     ((AND $?X (CDR $?X)))
     ((THSETQ
       $_X

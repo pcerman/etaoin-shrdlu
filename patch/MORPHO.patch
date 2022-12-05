@@ -1,5 +1,5 @@
---- code/morpho	1997-09-16 19:16:35.000000000 +0200
-+++ SHRDLU/MORPHO	2020-12-17 11:56:15.000000000 +0100
+--- code/morpho
++++ SHRDLU/MORPHO
 @@ -20,6 +20,14 @@
  	     (AND MOBYREAD (IOC Q))
  	CHAR (COND ((EQUAL (TYIPEEK) 24.) (READCH) (ERT) (GO THRU)); "cntrl-x" break

@@ -18,7 +18,9 @@ public abstract class Value {
     public static final boolean HAS_STRING = true;
     public static final char STR_MARKER = '|';
 
-    protected static int print_base = 8;
+    public static final int NUM_BASE = 10;
+
+    protected static int print_base = NUM_BASE;
 
     public static enum Type {
         CONSTANT, SYMBOL, STRING, INTEGER, FLOAT, PAIR, FUNC, PORT
@@ -132,10 +134,27 @@ public abstract class Value {
         if (v1 == null || v2 == null)
             return false;
 
-        if (v1.getType() == Type.INTEGER && v2.getType() == Type.INTEGER) {
+        if (v1.getType() != v2.getType())
+            return false;
+
+        switch (v1.getType()) {
+            case INTEGER -> {
             Num.Int n1 = (Num.Int) v1;
             Num.Int n2 = (Num.Int) v2;
             return n1.getValue() == n2.getValue();
+            }
+
+            case FLOAT -> {
+                Num.Real n1 = (Num.Real) v1;
+                Num.Real n2 = (Num.Real) v2;
+                return n1.getValue() == n2.getValue();
+            }
+
+            case STRING -> {
+                Str s1 = (Str) v1;
+                Str s2 = (Str) v2;
+                return Str.eq(s1, s2);
+            }
         }
 
         return false;

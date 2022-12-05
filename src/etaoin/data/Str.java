@@ -47,11 +47,25 @@ public class Str extends Value {
     }
 
     public static boolean equals(Str s1, Str s2) {
-        if (s1 == null)
-            return s2 == null;
-        if (s2 == null)
+        if (s1 == s2)
+            return true;
+
+        if (s1 == null || s2 == null)
             return false;
 
+        if (s1.value == s2.value)
+            return true;
+
         return s1.value.equals(s2.value);
+    }
+
+    public static boolean eq(Str s1, Str s2) {
+        if (s1 == s2)
+            return true;
+
+        if (s1 == null || s2 == null)
+            return false;
+
+        return s1.value == s2.value;
     }
 }

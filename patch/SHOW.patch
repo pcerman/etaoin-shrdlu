@@ -1,5 +1,5 @@
---- code/show	1997-09-16 19:16:35.000000000 +0200
-+++ SHRDLU/SHOW	2020-11-05 11:25:06.000000000 +0100
+--- code/show
++++ SHRDLU/SHOW
 @@ -61,7 +61,7 @@
  		      ((GET X 'INTERPRET)
  		       (SETQ BODY (CDR (GET X 'INTERPRET))))

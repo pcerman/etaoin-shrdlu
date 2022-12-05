@@ -1,5 +1,5 @@
---- code/smutil	1997-09-16 19:16:36.000000000 +0200
-+++ SHRDLU/SMUTIL	2020-12-06 21:46:17.000000000 +0100
+--- code/smutil
++++ SHRDLU/SMUTIL
 @@ -28,7 +28,7 @@
  			   (T (ERT ISTENSE -- FUNNY ARG)))))) 
  
@@ -9,6 +9,15 @@
  
  (DEFUN IMPERF NIL (ISTENSE C 'IMPERF)) 
  
+@@ -42,7 +42,7 @@
+        ;;;     MARKERS=         <LIST OF SEMANTIC MARKERS> 
+        ;;;     SYSTEMS=         <LIST OF SYSTEMS FOR THOSE MARKERS--USED FOR FAST
+        ;;;                          MARKER CHECKING?>
+-       ;;;     PLAUSIBILITY=    <INTEGER BETWEEN 0 AND 1000 USED IN DISAMBIGNUATION> 
++       ;;;     PLAUSIBILITY=    <INTEGER BETWEEN 0 AND 01000 USED IN DISAMBIGNUATION> 
+        ;;;     RSSNODE=         <NODE NAME FOR AN RSS>
+        ;;;     OSSNODE=         <NODE NAME FOR AN OSS> 
+        ;;;     PARSENODE=      <CORRESPONDING NODE OF PARSE TREE>
 @@ -113,13 +113,13 @@
  (DEFUN NEWCOPY (OSS) 
         (PROG (OLD NEW) 
@@ -25,6 +34,15 @@
  		   ((PUTPROP NEW (CADR OLD) (CAR OLD))))
  	     (SETQ OLD (CDDR OLD))
  	     (GO UP))) 
+@@ -148,7 +148,7 @@
+        ;;;                                   SMOB2 FOR CADDR
+        ;;;     PROCEDURE:        CONDENSED PLANNER CODE SCHEMA
+        ;;;     MARKERS:          SEMANTIC MARKERS
+-       ;;;     PLAUSIBILITY:     EVALUATED TO GET INTEGER FROM 0 TO 1000 INDICATING RELATIVE
++       ;;;     PLAUSIBILITY:     EVALUATED TO GET INTEGER FROM 0 TO 01000 INDICATING RELATIVE
+        ;;;                          LIKLIHOOD OF THIS DEFINITION SENSE.
+        ;;;     REL:                ******>>>
+        ;;;
 @@ -393,7 +393,7 @@
         ;;IN THE INPUT S-EXPRESSION L.  IF IT FINDS ONE THEN THE
         ;;EXPRESSION MUMBLE IS EVALUATED AND REPACES (#EVAL ...),
@@ -52,6 +70,15 @@
  								       ;	   FN APPLIED TO TOP TWO ELEMENTS. EVAL
  	     (SETQ L (CDDR L))
  								       ;IS TO AVOID CONFLICT WITH FUNCTION REALLY NAMED
+@@ -532,7 +532,7 @@
+        ;; INPUTS ARE IN KEYWORD FORMAT (ATTRIBUTE-VALUE PAIRS).  THE
+        ;;KEYWORD IS NOT EVALUATED BUT ITS VLUE IS.  POSIBLE KEYWORDS:
+        ;;;     MARKERS:            LIST OF SEMANTIC MARKERS
+-       ;;;     PLAUSIBILITY:       EVALS TO INTEGER FROM 0 TO 1000 INDICATING RELATIVE
++       ;;;     PLAUSIBILITY:       EVALS TO INTEGER FROM 0 TO 01000 INDICATING RELATIVE
+        ;;;                         LIKLIHOOD OF THIS DEFINITION SENSE
+        ;;;     DET:                ****I'M TOO LAZY TOO LOKK THIS UP NOW
+ 								       ; FILL IN DET********************
 @@ -860,7 +860,7 @@
  								       ;THIS INSTANCE OF IT HAS.  (LENGTH ...) COMPUTES
  		       ;THE NUMBER OF ARGUMENTS + 1 AND THE (ASSQ ...)

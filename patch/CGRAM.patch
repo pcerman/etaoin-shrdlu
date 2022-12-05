@@ -1,5 +1,5 @@
---- code/cgram	1997-09-16 19:16:33.000000000 +0200
-+++ SHRDLU/CGRAM	2020-12-28 22:55:52.000000000 +0100
+--- code/cgram
++++ SHRDLU/CGRAM
 @@ -1,16 +1,16 @@
  (declare (genprefix cgram))
  
@@ -37,7 +37,7 @@
  	     (SETQ :RESULT (OR (PARSE VB ING (CLASF)) (PARSE VB EN (CLASF)) (PARSE CLASF)))
  	     (COND (:RESULT (COND ((NULL NN) (GO REDUC)) (T (GO CLASF)))))
 +	     (SETQ T2 (1+ T2))
-+	     (AND (GREATERP T2 100)
++	     (AND (GREATERP T2 0100)
 +	          (GO FAIL))
  	NOUN (AND LABELTRACE (PASSING 'NOUN))
  	     (SETQ :RESULT (PARSE NOUN))

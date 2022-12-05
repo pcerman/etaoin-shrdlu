@@ -1,5 +1,5 @@
---- code/syscom	1997-09-16 19:16:36.000000000 +0200
-+++ SHRDLU/SYSCOM	2020-12-17 00:22:54.000000000 +0100
+--- code/syscom
++++ SHRDLU/SYSCOM
 @@ -66,7 +66,7 @@
  		       ((APPLY 'SAY
  			       (OR GLOBAL-MESSAGE

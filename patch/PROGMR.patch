@@ -1,5 +1,5 @@
---- code/progmr	1997-09-16 19:16:35.000000000 +0200
-+++ SHRDLU/PROGMR	2020-12-04 14:38:20.000000000 +0100
+--- code/progmr
++++ SHRDLU/PROGMR
 @@ -240,7 +240,11 @@
  
  (DEFUN ISX (A B) (MEMBER B (FE A))) 
