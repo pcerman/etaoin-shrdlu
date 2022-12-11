@@ -28,6 +28,7 @@ public final class Interpreter {
     private int traceLevel = 0;
 
     public final String[] Arguments;
+    public String RcFile;
 
     public final List<Func> Traced;
     public final List<Func> Before;

@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -62,8 +63,8 @@ public class Etaoin {
         }
     }
 
-    private static final Pattern OPTION = Pattern.compile("^(--?[^-=][^=]*)");
-    private static final Pattern OPTION_VAL = Pattern.compile("=(.*)$");
+    private static final Pattern OPTION = Pattern.compile("^(--?[^:=-][^:=]*)");
+    private static final Pattern OPTION_VAL = Pattern.compile("[:=](.*)$");
 
     private static final List<String> options = new ArrayList<String>();
     private static final List<String> data = new ArrayList<String>();
@@ -84,7 +85,9 @@ public class Etaoin {
         return -1;
     }
 
-    private static boolean parseArguments(String[] args, String[] allowedOptions) {
+    private static boolean parseArguments(String[] args, String[] singleOpt, String[] paramOpt) {
+        String lastOpt = null;
+
         for (int i=0; i < args.length; i++) {
             var arg = args[i];
 
@@ -92,21 +95,43 @@ public class Etaoin {
                 for (int j=i+1; j < args.length; j++) {
                     data.add(args[j]);
                 }
-                return true;
+                break;
+            }
+
+            if (lastOpt != null) {
+                options.add(lastOpt + ':' + arg);
+                lastOpt = null;
+                continue;
             }
 
             var opt = getOption(arg);
             if (opt != null && !opt.isBlank()) {
-                if (search(allowedOptions, opt) < 0) {
+                if (search(singleOpt, opt) >= 0) {
+                    if (getValue(arg) != null) {
+                        terminal.println("option must not have value: " + arg);
+                        return false;
+                    }
+                    options.add(arg);
+                } else if (search(paramOpt, opt) >= 0) {
+                    if (getValue(arg) != null) {
+                        options.add(arg);
+                    } else {
+                        lastOpt = opt;
+                    }
+                } else {
                     terminal.println("unknown option: " + opt);
                     return false;
                 }
-                options.add(arg);
             } else if (arg.startsWith("-")) {
                 terminal.println("wrong option: " + arg);
                 return false;
             } else
                 data.add(arg);
+        }
+
+        if (lastOpt != null) {
+            terminal.println("missing value for option: " + lastOpt);
+            return false;
         }
 
         return true;
@@ -126,13 +151,15 @@ public class Etaoin {
 
     private static String getValue(String option) {
         var m = OPTION_VAL.matcher(option);
-        return m.find() ? m.group(1) : "";
+        return m.find() ? m.group(1) : null;
     }
 
     private static String optValue(String option) {
-        var fopt = options.stream().filter(opt -> (option.compareTo(getOption(opt)) == 0)).findFirst();
-        if (fopt.isPresent()) {
-            return getValue(fopt.get());
+        for (int i = options.size() - 1; i >= 0; i--) {
+            var opt = options.get(i);
+            if (option.compareTo(getOption(opt)) == 0) {
+                return getValue(opt);
+            }
         }
         return null;
     }
@@ -151,8 +178,10 @@ public class Etaoin {
 
     public static void main(String[] args) throws Exception {
 
-        if (!parseArguments(args, new String[] {"-h", "-help", "--help", "-init", "-e", "-f", "-q", "-v"}))
+        if (!parseArguments(args, new String[]{"-h", "-help", "--help", "-q", "-v"},
+                                  new String[]{"-init", "-e", "-f"})) {
             return;
+        }
 
         if (hasAnyOption("-h", "-help", "--help")) {
             terminal.println("use: etaoin <option>* <-->? <arg>*\n");
@@ -192,13 +221,33 @@ public class Etaoin {
         var rc = optValue("-init");
 
         String rc_file = null;
-        if (rc == null)
-            rc_file = ".etaoinrc";
-        else if (!rc.isBlank())
+        if (rc == null) {
+            var rc_paths = new String[] {
+                "",
+                System.getProperty("user.dir"),
+                System.getProperty("user.home"),
+                (new File(System.getProperty("sun.java.command"))).getName()
+            };
+            for (String path : rc_paths) {
+                File file = new File(Path.of(path, ".etaoinrc").toString());
+                if (file.exists()) {
+                    rc_file = file.getPath();
+                    break;
+                }
+            }
+        } else if (!rc.isBlank()) {
+            if (!(new File(rc)).exists()) {
+                terminal.println("\nERROR: initialization file '" + rc + "' is not found");
+                return;
+            }
             rc_file = rc;
+        }
 
         try {
-            if (rc_file != null && (new File(rc_file)).exists()) {
+            var file = rc_file != null ? new File(rc_file) : null;
+            if (file != null && file.exists()) {
+                in.RcFile = file.getAbsolutePath();
+
                 String load_rc = String.format("(load %s%s%s)", Value.STR_MARKER, rc_file, Value.STR_MARKER);
                 evalString(in, env, load_rc);
             }
@@ -207,8 +256,9 @@ public class Etaoin {
                 switch (getOption(opt)) {
                     case "-e": {
                         String val = getValue(opt);
-                        if (val != null && !val.isBlank())
+                        if (val != null && !val.isBlank()) {
                             evalString(in, env, val);
+                        }
                         break;
                     }
 

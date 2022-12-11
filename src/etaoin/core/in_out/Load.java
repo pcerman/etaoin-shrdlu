@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
 
 public class Load extends Func {
 
@@ -52,6 +53,14 @@ public class Load extends Func {
             stream = new FileInputStream(file);
             Reader rdr = new Reader(new InputStreamReader(stream));
 
+            env = new Environment(env);
+
+            var file_name = file.getAbsolutePath();
+            var file_path = Path.of(file_name).getParent().toString();
+
+            env.setValue(in.getSymbol("$LOAD-FILE$"), new Str(file_name));
+            env.setValue(in.getSymbol("$LOAD-PATH$"), new Str(file_path));
+
             Value val = in.read(rdr, env);
             position = rdr.getPosition();
 
@@ -76,7 +85,8 @@ public class Load extends Func {
         }
         finally {
             try {
-                stream.close();
+                if (stream != null)
+                    stream.close();
             }
             catch (IOException ex) { }
         }
