@@ -14,7 +14,9 @@ package etaoin.core;
 import etaoin.Environment;
 import etaoin.Interpreter;
 import etaoin.LispException;
+import etaoin.Reader;
 import etaoin.data.*;
+import java.io.File;
 import java.util.ArrayList;
 
 public class Status extends Func {
@@ -185,8 +187,51 @@ public class Status extends Func {
                     return in.getBool(in.Status.break_on_error);
                 }
 
-                case "OS-NAME" -> {
-                    return new Str(System.getProperty("os.name"));
+                case "RC-FILE" -> {
+                    return in.RcFile != null ? new Str(in.RcFile) : Constant.Nil;
+                }
+
+                case "RC-PATH" -> {
+                    if (in.RcFile == null)
+                        return Constant.Nil;
+                    var path = (new File(in.RcFile)).getParent();
+                    return path != null ? new Str(path) : Constant.Nil;
+                }
+
+                case "SYS-PROP" -> {
+                    if (!Lst.hasTwoElms(args))
+                        requireN(2);
+
+                    Str key = Utils.getStr(in.eval(Lst.nth(args, 1), env));
+                    if (key == null)
+                        expected("string", 1);
+
+                    Value val = null;
+
+                    try {
+                        val = getValue(System.getProperty(key.getValue()));
+                    } catch (Exception e) { }
+
+                    return Utils.checkNull(val);
+                }
+
+                case "SYS-PROPS" -> {
+                    Value val = null;
+
+                    var props = System.getProperties();
+                    if (props != null) {
+                        var ps = new ArrayList<Value>();
+
+                        props.forEach((k, v) -> {
+                            Value k_ = getValue(k);
+                            if (k_ != null)
+                                ps.add(new Pair(k_, Utils.checkNull(getValue(v))));
+                        });
+
+                        val = Lst.toList(ps);
+                    }
+
+                    return Utils.checkNull(val);
                 }
             }
         }
@@ -199,5 +244,33 @@ public class Status extends Func {
     @Override
     public Func.FunctionType getFunctionType() {
         return Func.FunctionType.FSUBR;
+    }
+
+    private static Value getValue(Object obj) {
+        if (obj == null)
+            return null;
+
+        if (obj instanceof String) {
+            String val = (String)obj;
+
+            try {
+                if (Reader.isNumberLiteral(val, 10))
+                    return new Num.Int(Long.parseLong(val));
+                else if (Reader.isFloatingLiteral(val))
+                    return new Num.Real(Double.parseDouble(val));
+            } catch (Exception e) { }
+
+            return new Str(val);
+        }
+        if (obj instanceof Integer)
+            return new Num.Int((Integer)obj);
+        if (obj instanceof Long)
+            return new Num.Int((Long)obj);
+        if (obj instanceof Float)
+            return new Num.Real((Float)obj);
+        if (obj instanceof Double)
+            return new Num.Real((Double)obj);
+
+        return new Str(obj.toString());
     }
 }
