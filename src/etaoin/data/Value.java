@@ -139,9 +139,9 @@ public abstract class Value {
 
         switch (v1.getType()) {
             case INTEGER -> {
-            Num.Int n1 = (Num.Int) v1;
-            Num.Int n2 = (Num.Int) v2;
-            return n1.getValue() == n2.getValue();
+                Num.Int n1 = (Num.Int) v1;
+                Num.Int n2 = (Num.Int) v2;
+                return n1.getValue() == n2.getValue();
             }
 
             case FLOAT -> {

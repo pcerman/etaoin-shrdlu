@@ -376,7 +376,7 @@ public final class Interpreter {
     public Value expand_once(Environment env, Value val) throws LispException {
         if (val instanceof Pair) {
             Pair p = (Pair) val;
-            var fn = getFunction(p.getCar(), env);
+            var fn = getMacroFunction(p.getCar(), env);
             if (fn != null && fn.getFunctionType() == Func.FunctionType.MACRO) {
                 val = fn.applyFn(this, env, p);
             }
@@ -445,8 +445,8 @@ public final class Interpreter {
 
                     Value v = p.getCar();
 
-                    if (p.getCar() instanceof Pair) {
-                        Pair fst = (Pair) p.getCar();
+                    if (v instanceof Pair) {
+                        Pair fst = (Pair) v;
 
                         if (fst.getCar() == UNQUOTE) {
                             if (!Lst.hasTwoElms(fst)) {
@@ -476,6 +476,10 @@ public final class Interpreter {
                         } else {
                             v = backquote(fst, env);
                         }
+                    } else if (last != null && (v == UNQUOTE || v == SPLICE)) {
+                        last.setCdr(backquote(p, env));
+                        val = null;
+                        break;
                     }
 
                     if (v != null) {
@@ -549,7 +553,15 @@ public final class Interpreter {
         return val;
     }
 
+    public Func getMacroFunction(Value val, Environment env) throws LispException {
+        return getFunction(val, env, true);
+    }
+
     public Func getFunction(Value val, Environment env) throws LispException {
+        return getFunction(val, env, false);
+    }
+
+    private Func getFunction(Value val, Environment env, boolean dont_eval) throws LispException {
         List<Value> vals = null;
 
         boolean is_evaluated = false;
@@ -564,7 +576,7 @@ public final class Interpreter {
                 if (func instanceof Func)
                     return (Func) func;
 
-                if (func instanceof Pair) {
+                if (!dont_eval && func instanceof Pair) {
                     Pair lmd = (Pair) func;
                     return (Func) eval(lmd, env);
                 }
@@ -583,7 +595,7 @@ public final class Interpreter {
                         val = symb.getValue();
                 }
 
-            } else if (val instanceof Pair) {
+            } else if (!dont_eval && val instanceof Pair) {
 
                 Pair lmd = (Pair) val;
                 if (lmd.getCar() == LAMBDA)

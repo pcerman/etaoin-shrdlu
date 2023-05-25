@@ -42,6 +42,9 @@ public class Lambda extends Func {
             List<Symbol> jvars = new ArrayList<>(1);
             jvars.add(s);
 
+            for (int i = 0; i < body.size(); i++) {
+                body.set(i, in.expand_all(env, body.get(i)));
+            }
             return new Expr("LAMBDA", FunctionType.LEXPR, jvars, body);
         } else {
             Pair vars = Utils.getPair(v1);
@@ -71,6 +74,11 @@ public class Lambda extends Func {
             else if (type == in.LAMBDA_MACRO)
                 ftype = FunctionType.MACRO;
 
+            if (ftype != FunctionType.MACRO) {
+                for (int i = 0; i < body.size(); i++) {
+                    body.set(i, in.expand_all(env, body.get(i)));
+                }
+            }
             return new Expr("LAMBDA", ftype, jvars, body);
         }
     }

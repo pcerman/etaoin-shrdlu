@@ -73,6 +73,9 @@ public class DeFun extends Func {
         }
 
         FunctionType type = in.symbolToFunctionType(ftype);
+        if (type != FunctionType.MACRO) {
+            body = Lst.safeCdr(in.expand_all(env, Lst.cons(in.getSymbol("PROGN"), body)));
+        }
         Func func = getFunction(fname, type, pars, body);
         fname.setProperty(ftype, func);
 
