@@ -242,22 +242,145 @@ public class Lexer {
     }
 
     private String readString(StringBuilder token) throws LispException {
+        boolean esc = false;
+
         for (;;) {
             int ch = peek();
-            if (ch < 0 || ch == '\r' || ch == '\n')
+            if (ch < 0)
                 Interpreter.error("Unbalanced string", getPosition());
+
+            if (esc) {
+                switch (ch) {
+                    case 'n':  next(); token.append('\n'); break;
+                    case 'r':  next(); token.append('\r'); break;
+                    case 'f':  next(); token.append('\f'); break;
+                    case 'b':  next(); token.append('\b'); break;
+                    case 't':  next(); token.append('\t'); break;
+                    case '"':
+                    case '\\': token.append((char)next()); break;
+
+                    case 'o':
+                    case '0':
+                        next();
+                        int ov = readEscOctal();
+                        if (ov < 0) {
+                            token.append(ch == '0' ? '\0' : (char) ch);
+                        } else {
+                            token.append((char) ov);
+                        }
+                        break;
+
+                    case 'x':
+                        next();
+                        int xv = readEscHex();
+                        if (xv < 0) {
+                            token.append((char) ch);
+                        } else {
+                            token.append((char) xv);
+                        }
+                        break;
+
+                    case 'u':
+                    case 'U':
+                        next();
+                        int uv = readEscUnicode();
+                        if (uv < 0) {
+                            token.append((char) ch);
+                        } else {
+                            token.append((char) uv);
+                        }
+                        break;
+
+                    default:
+                        if ('1' <= ch && ch <= '9') {
+                            int dv = readEscDecimal();
+                            token.append((char) dv);
+                        } else {
+                            token.append((char) next());
+                        }
+                        break;
+                }
+                esc = false;
+                continue;
+            }
+
+            if (ch == '\r' || ch == '\n')
+                Interpreter.error("Unbalanced string", getPosition());
+
+            if (ch == '\\') {
+                next();
+                esc = true;
+                continue;
+            }
 
             token.append((char)next());
 
-            if (ch == Value.STR_MARKER) {
-                if (peek() == Value.STR_MARKER)
-                    next();
-                else
-                    break;
-            }
+            if (ch == Value.STR_MARKER)
+                break;
         }
 
         return token.toString();
+    }
+
+    private int readEscOctal() {
+        return readEscNumber(8, 255);
+    }
+
+    private int readEscDecimal() {
+        return readEscNumber(10, 255);
+    }
+
+    private int readEscHex() {
+        return readEscNumber(16, 255);
+    }
+
+    private int readEscUnicode() {
+        return readEscNumber(16, 65535);
+    }
+
+    private int readEscNumber(int base, int max) {
+        int val = 0;
+        int idx = 0;
+
+        int cnt = 0;
+        for (int m = max; m > 0; m /= base) {
+            cnt++;
+        }
+
+        for (idx = 0; idx < cnt; idx++) {
+            int digit = switch (base) {
+                case 8 -> getOctalDigit(peek());
+                case 10 -> getDecimalDigit(peek());
+                case 16 -> getHexadecimalDigit(peek());
+                default -> -1;
+            };
+            if (digit < 0) {
+                break;
+            }
+            int v = val * base + digit;
+            if (v > max) {
+                break;
+            }
+            val = v;
+            next();
+        }
+
+        return idx == 0 ? -1 : val;
+    }
+
+    public static int getOctalDigit(int ch) {
+        return '0' <= ch && ch <= '7' ? ch - '0' : -1;
+    }
+
+    public static int getDecimalDigit(int ch) {
+        return '0' <= ch && ch <= '9' ? ch - '0' : -1;
+    }
+
+    public static int getHexadecimalDigit(int ch) {
+        return '0' <= ch && ch <= '9' ? ch - '0'
+             : 'A' <= ch && ch <= 'F' ? 10 + ch - 'A'
+             : 'a' <= ch && ch <= 'f' ? 10 + ch - 'a'
+             : -1;
     }
 
     public static boolean isEscapeChar(char ch) {

@@ -36,9 +36,22 @@ public class Str extends Value {
             int len = value.length();
             for (int i = 0; i < len; i++) {
                 char ch = value.charAt(i);
-                builder.append(ch);
-                if (ch == Value.STR_MARKER)
-                    builder.append(ch);
+                if (ch < ' ') {
+                    switch (ch) {
+                        case '\n': builder.append("\\n"); break;
+                        case '\r': builder.append("\\r"); break;
+                        case '\f': builder.append("\\f"); break;
+                        case '\b': builder.append("\\b"); break;
+                        case '\t': builder.append("\\t"); break;
+                        default:   builder.append(String.format("\\x%02x", (int)ch)); break;
+                    }
+                } else {
+                    switch (ch) {
+                        case Value.STR_MARKER:
+                        case '\\': builder.append(String.format("\\%c", ch)); break;
+                        default: builder.append(ch);
+                    }
+                }
             }
 
             builder.append(Value.STR_MARKER);
