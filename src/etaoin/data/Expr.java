@@ -83,6 +83,14 @@ public class Expr extends Func {
         return Utils.checkNull(val);
     }
 
+    public List<Symbol> getArgs() {
+        return args;
+    }
+
+    public List<Value> getBody() {
+        return body;
+    }
+
     @Override
     public FunctionType getFunctionType() {
         return ftype;

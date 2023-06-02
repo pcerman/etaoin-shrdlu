@@ -51,7 +51,7 @@ public abstract class Lst {
             return new Pair(v1, v2 == Constant.Nil ? null : v2);
         }
 
-        Pair lst = vals[cnt - 1] == Constant.Nil ? null : new Pair(vals[cnt - 1], null);
+        Value lst = vals[cnt - 1] == Constant.Nil ? null : vals[cnt - 1];
         for (int i = cnt - 2; i >= 0; i--)
             lst = new Pair(vals[i], lst);
 

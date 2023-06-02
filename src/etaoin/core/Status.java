@@ -233,6 +233,32 @@ public class Status extends Func {
 
                     return Utils.checkNull(val);
                 }
+
+                case "FUNCTION" -> {
+                    if (!Lst.hasTwoElms(args))
+                        requireN(2);
+                    Value v = in.eval(Lst.nth(args, 1), env);
+                    Func fn = Utils.getFunc(v);
+                    if (fn == null)
+                        fn = in.getFunction(v, env);
+                    if (fn == null)
+                        expected("function", 2);
+
+                    var type = fn.getFunctionType();
+                    var stype = in.functionTypeToSymbol(type);
+
+                    if (fn instanceof Expr) {
+                        Expr expr = (Expr) fn;
+                        Pair pars = Lst.toList(expr.getArgs());
+                        Pair body = Lst.toList(expr.getBody());
+
+                        return (type == FunctionType.LEXPR)
+                                ? Lst.cons(stype, Lst.nconc(pars, body))
+                                : Lst.cons(stype, pars, body);
+                    }
+
+                    return Lst.create(stype, new Str(fn.toString(true)));
+                }
             }
         }
 

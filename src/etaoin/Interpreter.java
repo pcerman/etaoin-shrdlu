@@ -386,6 +386,16 @@ public final class Interpreter {
     }
 
     public Value expand_all(Environment env, Value val) throws LispException {
+        if (!(val instanceof Pair)) {
+            return val;
+        }
+
+        Value car = ((Pair) val).getCar();
+        if (car == QUOTE || car == B_QUOTE ||
+            car == UNQUOTE || car == SPLICE) {
+            return val;
+        }
+
         for (;;)
         {
             Value v = expand_once(env, val);
