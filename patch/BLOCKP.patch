@@ -55,8 +55,9 @@
    (OR (LESSP (APPLY (QUOTE PLUS)
  		    (MAPCAR (QUOTE (LAMBDA (X) (CADDR (SIZE X)))) $?X))
 -	     1201)
+-      (NOT (DPRINT2 (QUOTE TOO/ HIGH/,))))
 +	     01201)
-       (NOT (DPRINT2 (QUOTE TOO/ HIGH/,))))
++      (NOT (DPRINT2 (QUOTE TOO\ HIGH\,))))
    (THCOND
     ((AND $?X (CDR $?X)))
     ((THSETQ

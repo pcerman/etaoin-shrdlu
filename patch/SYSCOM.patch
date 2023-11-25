@@ -1,14 +1,20 @@
 --- code/syscom
 +++ SHRDLU/SYSCOM
-@@ -66,7 +66,7 @@
+@@ -65,11 +65,11 @@
+ 			 (T (TIME-ANSWER '(ANSWER C)))))
  		       ((APPLY 'SAY
  			       (OR GLOBAL-MESSAGE
- 				   '(I DON/'T UNDERSTAND/.))))))
+-				   '(I DON/'T UNDERSTAND/.))))))
 -		     ((PRINT *3)
++				   '(I DON\'T UNDERSTAND\.))))))
 +		     ((OR ANNOYANCE (PRINT *3))
  		      (APPLY 'SAY
  			     (OR GLOBAL-MESSAGE
- 				 '(I DON/'T UNDERSTAND/.)))))
+-				 '(I DON/'T UNDERSTAND/.)))))
++				 '(I DON\'T UNDERSTAND\.)))))
+ 		    (SHRDLU-TIMER)
+ 		    (AND MOBYTEST-IN-PROGRESS (AFTER-EACH-SENTENCE))
+ 		    (AND SH-STANDARD-PRINTOUT (SHSTPO))
 @@ -108,7 +108,7 @@
  ;;;********************************************
  ;;; how to use:
@@ -38,6 +44,56 @@
  
  (SETQ GO-AWAY NIL MOBYTEST-IN-PROGRESS NIL) 
  
+@@ -145,23 +145,23 @@
+ 	     (OR SH-PRINT-TIME (RETURN T))
+ 	     (SETQ BASE 10.)
+ 	     (TERPRI)
+-	     (PRINC 'TOTAL/ TIME/ USED:/ )
++	     (PRINC 'TOTAL\ TIME\ USED:\ )
+ 	     (PRINC (TIMER RUNTIME (RUNTIME)))
+-	     (PRINTC '/ / AMOUNT/ SPENT/ IN/ GARBAGE/ COLLECTION)
++	     (PRINTC '\ \ AMOUNT\ SPENT\ IN\ GARBAGE\ COLLECTION)
+ 	     (PRINC (TIMER SH-GCTIME (STATUS GCTIME)))
+ 	     (OR (EQ SH-PRINT-TIME 'FANCY) (RETURN T))
+ 	     (TERPRI)
+ 	     (PRINC 'BREAKDOWN:)
+-	     (PRINTC '/ / / PARSING)
++	     (PRINTC '\ \ \ PARSING)
+ 	     (PRINC P-TIME)
+-	     (PRINTC '/ / / SEMANTICS)
++	     (PRINTC '\ \ \ SEMANTICS)
+ 	     (PRINC SMN-TIME)
+-	     (PRINTC '/ / / MICROPLANNER)
+-	     (PRINTC '/ / / / / / FOR/ SEMANTICS)
++	     (PRINTC '\ \ \ MICROPLANNER)
++	     (PRINTC '\ \ \ \ \ \ FOR\ SEMANTICS)
+ 	     (PRINC PLNR-TIME)
+-	     (PRINTC '/ / / / / / FOR/ ANSWERING)
++	     (PRINTC '\ \ \ \ \ \ FOR\ ANSWERING)
+ 	     (PRINC ANS-PLNR-TIME)
+-	     (PRINTC '/ / / ANSWERING)
++	     (PRINTC '\ \ \ ANSWERING)
+ 	     (PRINC ANS-TIME)
+ 	     (TERPRI))) 
+ 
+@@ -210,7 +210,7 @@
+        (PROG (CH) 
+ 	MES  (MAPC (FUNCTION PRINT3) MESSAGE)
+ 	     (TERPRI)
+-	     (COND ((MEMQ (SETQ CH (READCH)) '(Y /y))
++	     (COND ((MEMQ (SETQ CH (READCH)) '(Y \y))
+ 		    (RETURN T))
+ 		   ;;;  ((EQ CH '?)
+ 		   ;;;   (EVAL (GET 'FLUSH 'EXPLANATION))
+@@ -254,7 +254,7 @@
+ 		 (TERPRI)
+ 		 (AND (CDR 0A)
+ 		      (PRINC (CAR 0A))
+-		      (PRINC '/ >>/ )
++		      (PRINC '\ >>\ )
+ 		      (PRINC (CADR 0A))
+ 		      (TERPRI))
+ 		 (SPRINT (COND ((CDR 0A) (GET (CAR 0A) (CADR 0A)))
 @@ -387,6 +387,7 @@
  (DEFUN ERTEX (MESSAGE CAUSE-ABORTION IGNORE-NOSTOP-SWITCH?) 
         (PROG (ERT-TIME GLOP EXP ST-BUFFER BUILDING-ST-FORM ^W ^Q
@@ -55,3 +111,65 @@
  			   (SETQ ERT-TIME
  				 (PLUS (TIME-SINCE ERT-TIME)
  				       ERT-TIME))		       ;ERT-TIME IS BOUND BY SHRDLU
+@@ -437,7 +438,7 @@
+ 				 FIRSTWORD NIL)
+ 			   (GO LISTEN))
+ 			  (ZOGUSER (PRINC GLOP)
+-				   (SAY ISN/'T A COMMAND)
++				   (SAY ISN\'T A COMMAND)
+ 				   (TERPRI)
+ 				   (GO PRINT))
+ 			  (T (SETQ EXP GLOP) (GO EVAL-EXP))))
+@@ -529,7 +530,7 @@
+ 			(LIST (FROM (NB A) (N A))
+ 			      (FE A)
+ 			      (SM A)
+-			      (COND ((ATOM (H A)) '/ )
++			      (COND ((ATOM (H A)) '\ )
+ 				    ((MAPLIST (FUNCTION PR1)
+ 					      (REVERSE (H A)))))))))
+ 	 EXPR) 
+@@ -553,14 +554,14 @@
+  EXPR) 
+ 
+ (DEFUN PRINT2 (X) 
+-       (COND ((GREATERP CHRCT (FLATSIZE X)) (PRINC '/ ))
++       (COND ((GREATERP CHRCT (FLATSIZE X)) (PRINC '\ ))
+ 	     (T (TERPRI)))
+        (PRINC X)) 
+ 
+ (DEFUN PRINT3 (X) 
+        (PROG2 (OR (GREATERP CHRCT (FLATSIZE X)) (TERPRI))
+ 	      (PRINC X)
+-	      (PRINC '/ ))) 
++	      (PRINC '\ ))) 
+ 
+ (DEFUN PRINTEXT (TEXT) 
+        (COND (TEXT (TERPRI)
+@@ -572,7 +573,7 @@
+ 		      =>   (COND ((NULL L) (RETURN NIL)))
+ 			   (SETQ TEST (EVAL (CAR L)))
+ 			   (COND ((EQ TEST '<TAB>))
+-				 (T (PRINC TEST) (PRINC '/ )))
++				 (T (PRINC TEST) (PRINC '\ )))
+ 			   (SETQ L (CDR L))
+ 			   (GO =>)))
+ 	 FEXPR) 
+@@ -636,14 +637,14 @@
+ 		      A	   (SETQ P (DIFFERENCE LINEL CHRCT))
+ 			   (COND ((NOT (GREATERP N P))
+ 				  (RETURN '<TAB>)))
+-			   (PRINC '/ )
++			   (PRINC '\ )
+ 			   (GO A)))
+ 	 EXPR) 
+ 
+ (DEFUN SPACE (N) 
+        (PROG (NN) 
+ 	A    (COND ((GREATERP N 0.)
+-		    (PRINC '/ )
++		    (PRINC '\ )
+ 		    (SETQ N (SUB1 N))
+ 		    (GO A))))) 
+ 
+\ No newline at end of file

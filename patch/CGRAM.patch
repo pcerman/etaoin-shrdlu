@@ -42,11 +42,58 @@
  	NOUN (AND LABELTRACE (PASSING 'NOUN))
  	     (SETQ :RESULT (PARSE NOUN))
  	     (COND ((NULL :RESULT) (GO RED2)))
+@@ -1322,7 +1326,7 @@
+ 
+ 
+ (DEFUN COMMA NIL 
+-       (COND ((SECONDWORD? '") (FLUSHME) T) ((CONJ)) ((ISQ RE INIT) (FLUSHME) T)))
++       (COND ((SECONDWORD? '\") (FLUSHME) T) ((CONJ)) ((ISQ RE INIT) (FLUSHME) T)))
+ 
+ 
+ (DEFUN CONJOIN NIL 
+@@ -1340,7 +1344,7 @@
+ 	UP   (AND LABELTRACE (PASSING 'UP))
+ 	     (SETQ PREV (NEXTWORD))
+ 	     (FLUSHME)
+-	     (COND ((AND (EQ PREV '/,)
++	     (COND ((AND (EQ PREV '\,)
+ 			 (OR (CDR H) (GREATERP (DIFFERENCE (LENGTH (NB H)) (LENGTH (N H))) 4))
+ 			 (MEMQ (NEXTWORD) '(OR AND NOR BUT))
+ 			 (F (NEXTWORD)))
+@@ -1367,7 +1371,7 @@
+ 	     (COND ((NULL :RESULT) (GO LOSE2)))
+ 	     (CUT END)
+ 	     (COND ((NOT (ATOM PREV)) (GO RETSM))
+-		   ((EQ PREV '/,)
++		   ((EQ PREV '\,)
+ 		    (COND ((NEXTWORD? COMMA) (FQ LIST) (GO UP)) (T (GO LIST))))
+ 		   ((MEMQ PREV '(AND OR NOR BUT))
+ 		    (COND ((EQ BOTH (NB H)) (FQ BOTH)))
+@@ -1382,7 +1386,7 @@
+ 	     (SETQ :RESULT (CQ LISTA))
+ 	     (COND (:RESULT (GO LISTA)))
+ 	LIST (AND LABELTRACE (PASSING 'LIST))
+-	     (SETQ :RESULT (AND (EQ PREV '/,)
++	     (SETQ :RESULT (AND (EQ PREV '\,)
+ 				(EQUAL (LENGTH H) 2)
+ 				(ISQ H NG)
+ 				(NOT (OR (ISQ H PRONG) (ISQ (CDR H) PRONG)))
+@@ -1447,8 +1451,8 @@
+ 						     ((MEMQ 'REPORT TYPE)
+ 						      '(R E P)))
+ 					       '(O B)
+-					       (LIST (COND ((EQ NUM 1) '/1)
+-							   (T '/2)))))
++					       (LIST (COND ((EQ NUM 1) '\1)
++							   (T '\2)))))
+ 			     VBFEAT))
+ 			   ((MEMQ 'COMP TYPE) (MEMQ 'INT VBFEAT))
+ 			   ((MEMQ 'NG TYPE)
 @@ -1482,5 +1486,5 @@
  		  (OR (NULL FEATURE) (F FEATURE))
  		  (RETURN T))))
  
 -REMEMBER/ TO/ UFILE 
-+'REMEMBER/ TO/ UFILE
++'REMEMBER\ TO\ UFILE
  
 \ No newline at end of file

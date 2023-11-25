@@ -8,27 +8,148 @@
 +		   ((MEMBER (TYIPEEK) '(19. 7.))     (ERR 'STOP))  ; Ctrl-S, Ctrl-G
 +		   ((EQUAL (TYIPEEK) 5)                            ; Ctrl-E eval expression
 +			(PROGV '(@V@) (LIST (EVAL (READ)))
-+			  (PRINC '>>/ )
++			  (PRINC '>>\ )
 +			  (PRIN1 @V@)
 +			  (TERPRI))
 +			(GO THRU))
                     ((= (tyipeek) 3.)
  (or (and mobyread (end-of-file-condition))
      (bug etaoin: about to read eof)) )
-@@ -87,12 +95,12 @@
+@@ -33,7 +41,7 @@
+ 		   ;;property of the current readtable, but this was quicker to
+ 		   ;;patch.
+                    )
+-    	     (cond ((EQ char '/ ) (GO WORD))           ;DELIMITER
++    	     (cond ((EQ char '\ ) (GO WORD))           ;DELIMITER
+ 		   ((MEMQ CHAR ALTMODE)
+ 		    (setq char (ascii (uppercase-ify-char (tyi))) )
+ 		    (COND ((MEMQ char ALTMODE)
+@@ -86,13 +94,13 @@
+ 		    (AND WORD (GO WORD))
  		    (GO PUNC)))
  	     (AND
- 	      (OR (AND (EQ CHAR '")
+-	      (OR (AND (EQ CHAR '")
 -		       (NOT ALREADY-BLGING-NEWRD)
 -		       (SETQ NEWWORD (SETQ ALREADY-BLGING-NEWRD T))
++	      (OR (AND (EQ CHAR '\")
 +		       (NOT ALREADY-BLGING-NEWWRD)
 +		       (SETQ NEWWORD (SETQ ALREADY-BLGING-NEWWRD T))
  		       (GO CHAR))
- 		  (AND (EQ CHAR '")
+-		  (AND (EQ CHAR '")
 -		       ALREaDY-BLGING-NEWRD
 -		       (NOT (SETQ ALREADY-BLGING-NEWRD NIL))
++		  (AND (EQ CHAR '\")
 +		       ALREADY-BLGING-NEWWRD
 +		       (NOT (SETQ ALREADY-BLGING-NEWWRD NIL))
  		       (GO WORD))
  								       ;WITHIN THIS "AND" ARE ALL THE CHARACTERS THAT
  		  (NUMBERP CHAR)
+@@ -105,7 +113,7 @@
+ 	DO   (PRINT 'READY)
+ 	     (TERPRI)
+ 	     (MAPC (FUNCTION (LAMBDA (X) (PRINT2 X))) (REVERSE SENT))
+-	     (PRINC '/ )
++	     (PRINC '\ )
+ 	     (MAPC (FUNCTION PRINC) (REVERSE WORD))
+ 	     (GO CHAR)
+ 	WORD (COND ((NULL WORD) (GO CHAR))
+@@ -132,7 +140,7 @@
+ 			       (CAR X)))
+ 		   ((EQ (CAR (LAST WORD)) '=)
+ 		    (BUILDWORD WRD
+-			       (COND ((MEMQ '" WORD)
++			       (COND ((MEMQ '\" WORD)
+ 				      '(PROPN NS POSS))
+ 				     ('(PROPN NS)))
+ 			       '((PROPN T))
+@@ -143,15 +151,15 @@
+ 	     ;;;---------------------------------------------
+ 	     ;;;              MORPHOLOGY CODE
+ 	     ;;;--------------------------------------------
+-	CUT  (COND ((STA WORD '(T " N))
++	CUT  (COND ((STA WORD '(T \" N))
+ 		    (SETQ RD (CDDDR WORD))
+ 		    (SETQ WORD (CONS '* WORD))
+ 		    (GO TRY))
+-		   ((STA WORD '(S "))
++		   ((STA WORD '(S \"))
+ 		    (SETQ WORD (CDDR WORD))
+ 		    (SETQ POSS WRD)
+ 		    (GO WORD))
+-		   ((STA WORD '("))
++		   ((STA WORD '(\"))
+ 		    (SETQ WORD (CDR WORD))
+ 		    (SETQ POSS WRD)
+ 		    (GO WORD))
+@@ -255,13 +263,13 @@
+ 						 'SEMANTICS)
+ 					    ROOT)
+ 				 (CONS POSS SENT))
+-				((BUILDWORD '"S
++				((BUILDWORD '\"S
+ 								       ; CAN WE GENERALIZE IT???
+ 					    '(VB BE V3PS PRES)
+ 					    (GET 'BE
+ 						 'SEMANTICS)
+ 					    'BE)
+-				 (CONS '"S (CONS WRD SENT)))))
++				 (CONS '\"S (CONS WRD SENT)))))
+ 		    ((CONS WRD SENT))))
+ 	PUNC (COND
+ 	      (PUNCT (COND ((AND (EQ PUNCT '?) (NULL SENT))
+@@ -284,11 +292,11 @@
+ 			    (OR ALTN (SETQ NEWWORD NIL))
+ 			    (GO PUNC)))
+ 	     (TERPRI)
+-	     (SAY *SORRY I DON/'T KNOW THE WORD ")
++	     (SAY *SORRY I DON\'T KNOW THE WORD \")
+ 	     (PRINC WRD)
+-	     (PRINC '/ "/.)
++	     (PRINC '\ \"\.)
+ 	     (TERPRI)
+-	     (SAY PLEASE TYPE <LF> AND CONTINUE THE SENTENCE/.)
++	     (SAY PLEASE TYPE <LF> AND CONTINUE THE SENTENCE\.)
+ 	NOGO (OR (EQUAL (TYI) 10.) (GO NOGO))
+ 	     (SETQ PUNCT NIL WORD NIL)
+ 	     (GO DO))) 
+@@ -328,19 +336,19 @@
+ 					(AND (CDDDR X) (CADDDR X)))))
+ 	     A)) 
+ 
+-(SETQ CARRET '/
++(SETQ CARRET '\
+ ) 
+ 
+ (DEFUN ETNEW NIL 
+-       (AND (EQ (CAR WORD) '")
+-	    (EQ (CAR (LAST WORD)) '")
++       (AND (EQ (CAR WORD) '\")
++	    (EQ (CAR (LAST WORD)) '\")
+ 	    (SETQ WRD (READLIST (CDR (REVERSE (CDR WORD)))))
+ 	    (BUILDWORD WRD
+ 		       '(NOUN NS)
+ 		       '((NOUN (NEWWORD)))
+ 		       NIL))) 
+ 
+-(SETQ FINAL '(/. ? !)) 
++(SETQ FINAL '(\. ? !)) 
+ 
+ (SETQ CONSO '(B C D F G H J K L M N P Q R S T V W X Z)) 
+ 
+@@ -348,7 +356,7 @@
+ 
+ (SETQ LIQUID '(L R S Z V)) 
+ 
+-(SETQ PUNCL '(/. ? : /; " !)) 
++(SETQ PUNCL '(\. ? : \; \" !)) 
+ 
+ (SETQ RUBOUT (ASCII 127.)) 
+ 
+@@ -361,5 +369,5 @@
+ 
+ (SETQ VOWEL '(NIL A E I O U Y)) 
+ 
+-(SETQ SPACE '/ ) 
++(SETQ SPACE '\ ) 
+ 
+\ No newline at end of file

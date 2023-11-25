@@ -1,5 +1,23 @@
 --- code/progmr
 +++ SHRDLU/PROGMR
+@@ -54,7 +54,7 @@
+ 			 (RETURN (ERT)))
+ 			(T (RETURN T))))
+ 	     (AND SMNTRACE
+-		  (PROGN (PRINTC '/ / CALLSM:/ )
++		  (PROGN (PRINTC '\ \ CALLSM:\ )
+ 			 (PRINC (CAR SEMANTIC-EXPRESSION))))
+ 	     (SETQ MPLNR-TIME 0.)
+ 	     (SETQ GC (STATUS GCTIME) 
+@@ -71,7 +71,7 @@
+ 		       (STATUS GCTIME)))
+ 	     (SETQ MP-TIME (PLUS MP-TIME MPLNR-TIME))
+ 	     (AND SMNTRACE
+-		  (PROGN (PRINTC 'CALLSM/ RETURNING:/ )
++		  (PROGN (PRINTC 'CALLSM\ RETURNING:\ )
+ 			 (PRINC RESULT)))
+ 	     (COND ((OR (EQ SMNBREAKS 'ALL)
+ 			(MEMQ SMNFN SMNBREAKS))
 @@ -240,7 +240,11 @@
  
  (DEFUN ISX (A B) (MEMBER B (FE A))) 
@@ -13,3 +31,51 @@
  
  (DEFPROP MP (LAMBDA (A) (SETQ MESP A)) FEXPR) 
  
+@@ -284,7 +288,7 @@
+ 	     (SETQ PARENT C)
+ 	     (COND ((NQ B-SPECIAL)
+ 		    (AND PARSETRACE
+-			 (PROGN (PRINTC '/ / SPECIAL/ WORD)
++			 (PROGN (PRINTC '\ \ SPECIAL\ WORD)
+ 				(PRINC (CAR N))))
+ 		    (EVAL (GETR 'B-SPECIAL N))))
+ 	     (COND ((EQ SPECIAL 'SKIP) (GO SKIP))
+@@ -292,9 +296,9 @@
+ 		   ((EQ SPECIAL 'LOSE) (SETQ N NBB) (GO LOSE)))
+ 	     (AND PARSETRACE
+ 		  (PROGN (TERPRI)
+-			 (PRINC '/()
++			 (PRINC '\()
+ 			 (PRINC LEVEL)
+-			 (PRINC '/ ####/ PARSING:/ )
++			 (PRINC '\ ####\ PARSING:\ )
+ 			 (PRINC REST)))
+ 	     (COND ((NULL (SETQ RE (APPLY-GRAMMAR UNIT)))	       ;THIS IS WHERE ALL THE WORK HAPPENS. IF THE
+ 		    (SETQ RE NIL)				       ;PARSE SUCEEDS, IT WILL RETURN THE NODE THAT HAS
+@@ -316,11 +320,11 @@
+ 			     (MEMQ UNIT PARSEBREAK)
+ 			     (MEMQ UNIT PARSETRACE)))
+ 		    (TERPRI)
+-		    (PRINC '/()
++		    (PRINC '\()
+ 		    (PRINC LEVEL)
+-		    (PRINC '/ PARSE/ SUCEEDED:/ )
++		    (PRINC '\ PARSE\ SUCEEDED:\ )
+ 		    (PRINC UNIT)
+-		    (PRINC '/ / )
++		    (PRINC '\ \ )
+ 		    (PRINC (FROM (NB RE) N))
+ 		    (AND PARSENODE-SEE (DP (CAR RE)))
+ 		    (AND (OR (EQ PARSEBREAK 'ALL)
+@@ -328,9 +332,9 @@
+ 			 (ERT)))
+ 		   ((OR PARSEBREAK PARSETRACE)
+ 		    (TERPRI)
+-		    (PRINC '/()
++		    (PRINC '\()
+ 		    (PRINC LEVEL)
+-		    (PRINC '/ PARSE/ FAILED)
++		    (PRINC '\ PARSE\ FAILED)
+ 		    (AND (OR (EQ PARSEBREAK 'ALL)
+ 			     (MEMQ UNIT PARSEBREAK))
+ 			 (ERT))))

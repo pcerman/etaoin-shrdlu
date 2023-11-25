@@ -18,6 +18,15 @@
         ;;;     RSSNODE=         <NODE NAME FOR AN RSS>
         ;;;     OSSNODE=         <NODE NAME FOR AN OSS> 
         ;;;     PARSENODE=      <CORRESPONDING NODE OF PARSE TREE>
+@@ -103,7 +103,7 @@
+ 			     RSSNODE=
+ 			     TSSNODE=
+ 			     ANSNODE=
+-			     (ERT /././.BUILD: NO NODE=)))
++			     (ERT \.\.\.BUILD: NO NODE=)))
+ 	     (MAPC '(LAMBDA (%PROP) (AND (SETQ %X (EVAL %PROP))
+ 					 (PUTPROP NODE= %X %PROP)))
+ 		   %PROPS)
 @@ -113,13 +113,13 @@
  (DEFUN NEWCOPY (OSS) 
         (PROG (OLD NEW) 
@@ -88,3 +97,30 @@
  		       ;THIS NUMBER.  IF THERE IS NO SUCH  NUMBER,
  		       ;NUMBERP FAILS AND SOME ARBITARY FUNCTION WHICH
  		       ;IS STORED OUT THERE IS EVALUATED TO GIVE THE
+@@ -929,7 +929,7 @@
+        (COND ((SETQ X (ASSOC 'MEASURE
+ 			     (GET (ROOT (NB NODE)) 'SEMANTICS)))
+ 	      (CADR X))
+-	     ((GLOBAL-ERR (APPEND '(I DON"T
++	     ((GLOBAL-ERR (APPEND '(I DON\"T
+ 				      KNOW
+ 				      HOW
+ 				      TO
+@@ -1072,7 +1072,7 @@
+ 						  FREEVARS))))))
+ 	((ATOM EXP) (BUG EXPAND - ATOMIC MODIFIER))
+ 	((EQ (CAR EXP) '*ORDINAL*)
+-	 (COND (ORDINAL (GLOBAL-ERR '(I CAN"T
++	 (COND (ORDINAL (GLOBAL-ERR '(I CAN\"T
+ 					HANDLE
+ 					TWO
+ 					ORDINALS
+@@ -1180,7 +1180,7 @@
+ (DEFUN ERQSET (X) 
+        ;;USED BY EXPAND TO MAKE SURE IT ISN"T GETTING CONFUSED BY TOO
+        ;;MANY CONNECTIVES AND QUANTIFIERS IN THE SAME EXPRESSION
+-       (COND (QUANTIFIER (GLOBAL-ERR '(I CAN"T
++       (COND (QUANTIFIER (GLOBAL-ERR '(I CAN\"T
+ 					 HANDLE
+ 					 COMBINATIONS
+ 					 OF

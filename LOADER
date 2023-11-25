@@ -62,7 +62,7 @@
 
   (TERPRI)
   (TERPRI)
-  (PRINC |*** CONSTRUCTION COMPLETED ***|)
+  (PRINC "*** CONSTRUCTION COMPLETED ***")
   (TERPRI))
 
 (DEFUN RUN ()
@@ -85,6 +85,6 @@
 
 (LOADSHRDLU)
 
-(PRINC |*** To run SHRDLU do: (RUN)|)
+(PRINC "*** To run SHRDLU do: (RUN)")
 (TERPRI)
 (TERPRI)

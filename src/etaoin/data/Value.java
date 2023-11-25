@@ -16,7 +16,7 @@ import etaoin.core.Utils;
 public abstract class Value {
 
     public static final boolean HAS_STRING = true;
-    public static final char STR_MARKER = '|';
+    public static final char STR_MARKER = '"';
 
     public static final int NUM_BASE = 10;
 

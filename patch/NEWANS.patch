@@ -1,14 +1,121 @@
 --- code/newans
 +++ SHRDLU/NEWANS
+@@ -28,7 +28,7 @@
+ TEST-LOOP
+ 	     (AND ANS-AFTERFORMULATION-PAUSE  (ERT ANSWER HAS BEEN DETERMINED))
+ 	     (EVLIS (ACTION? (CAR ANSLIST)))			       ;THE ACTION INCLUDES BOTH THE THINGS TO BE DONE
+-	     (PRINC '/.)					       ;AND THE INSTRUCTIONS FOR PRINTING A RESPONSE.
++	     (PRINC '\.)					       ;AND THE INSTRUCTIONS FOR PRINTING A RESPONSE.
+ 	     (TERPRI)
+ (AND ANS-TEST? (GO TEST-LOOP))
+ 	     (DOBACKREF (CAR ANSLIST))				       ;DOBACKREF STORES AWAY DISCOURSE INFORMATION
+@@ -112,7 +112,7 @@
+ 					     512.)))		       ;SAVES THE PLAN FROM BACKTRACKING. PLNR-JUNKIFY
+ 			(COND (SUCCESS (APPEND (REVERSE PLAN2)	       ;PUTS ON THE JUNK FOR SAVING THE DISCOURSE
+ 					       '((SAY OK))))	       ;REFERENTS ETC. THE THIRD ARGUMENT TO ANSBUILD
+-			      (T '((SAY I CAN/'T))))		       ;CAUSES THE SYSTEM TO GO BACK THROUGH THE
++			      (T '((SAY I CAN\'T))))		       ;CAUSES THE SYSTEM TO GO BACK THROUGH THE
+ 			T))))					       ;DEDUCTION TO GET THE DATA BASE STRAIGHT IF THIS
+ 								       ;ANSWER IS PICKED.  IT ALSO TAKES CARE OF THE
+ 								       ;BACKREF STUFF.
+@@ -126,7 +126,7 @@
+        ;;FOR DECLARATIVES.
+        (COND
+ 	((OR? RSS)
+-	 (GLOBAL-ERR I DON/'T UNDERSTAND DISJUNCTIVE DECLARATIVES))
++	 (GLOBAL-ERR I DON\'T UNDERSTAND DISJUNCTIVE DECLARATIVES))
+ 	((AND? RSS)
+ 	 (PROG (ANS) 
+ 	       (SETQ ANS (MAPCAR 'ANSDECLARE (AND? RSS)))	       ;CONJOINED DECLARATIVES ARE HANDLED BY DOING
+@@ -176,14 +176,14 @@
+ 		   ((SETQ AMB (CDR AMB)) (GO UP))
+ 		   (T (BUG ANSELIMINATE -- NO CONFLICT)))
+ 	     (TERPRI)
+-	     (SAY I/'M NOT SURE WHAT YOU MEAN BY ")
++	     (SAY I\'M NOT SURE WHAT YOU MEAN BY \")
+ 	     (MAPC 'PRINT2
+ 		   (FROM (NB (CADDAR AMB)) (N (CADDAR AMB))))
+-	     (SAY " IN THE PHRASE ")
++	     (SAY \" IN THE PHRASE \")
+ 	     (MAPC 'PRINT2
+ 		   (FROM (NB (SETQ XX (PARENT? (CADDAR AMB))))
+ 			 (N XX)))
+-	     (PRINC '"/.)
++	     (PRINC '\"\.)
+ 	     (TERPRI)
+ 	     (SAY DO YOU MEAN:)
+ 	     (SETQ XX 0.)
+@@ -243,7 +243,7 @@
+ 		    (RETURN (COND ((ERRSET (SETQ X (ANSDECLARE RSS)))
+ 				   X)
+ 				  ((EQUAL GLOBAL-MESSAGE
+-					  '(THAT ISN/'T
++					  '(THAT ISN\'T
+ 						 THE
+ 						 KIND
+ 						 OF
+@@ -354,7 +354,7 @@
+ 		(ANSBUILD (PLUS (CAR ANS) (PLAUSIBILITY? RSS))
+ 			  (COND ((CADR ANS) '((SAY YES)))
+ 				((ISTENSE NODE 'MODAL)
+-				 '((SAY I DON/'T KNOW)))
++				 '((SAY I DON\'T KNOW)))
+ 				(T '((SAY NO))))
+ 			  T))
+ 	       ((SETQ ANS (THVAL-MULT (PLNR-FINDIFY 'ALL
 @@ -366,7 +366,7 @@
  			(PLUS (PLAUSIBILITY? RSS) (CAR ANS)))	       ;AN ANSWER IS VERY IMPLAUSIBILE IF IT MENTIONS
  		       (T (DIFFERENCE (PLAUSIBILITY? RSS) 512.)))      ;AN EVENT THE SYSTEM CAN'T FIND.
  		 (COND ((NULL (CADR ANS))
 -			'((SAY I CAN/'TDISCUSSA NON-EXISTENT EVENT)))
-+			'((SAY I CAN/'T DISCUSS A NON-EXISTENT EVENT)))
++			'((SAY I CAN\'T DISCUSS A NON-EXISTENT EVENT)))
  		       ((APPEND (AND (EQ TYPE 'POLAR)
  				     '((SAY YES)))
  				(LIST (LIST 'EVLIS
+@@ -412,7 +412,7 @@
+ 			(MAPCAR 'PLAUSIBILITY? ANS))
+ 		 (APPEND
+ 		  (AND (NOT (ISQ (PARSENODE? RSS) COMPONENT))
+-		       '((SAY YOU/'RE TRYING TO CONFUSE ME/.)))
++		       '((SAY YOU\'RE TRYING TO CONFUSE ME\.)))
+ 		  (MAPCAN 
+ 		   '(LAMBDA (QUEST) 
+ 		     (APPEND
+@@ -488,7 +488,7 @@
+ 		   (COND
+ 		    ((NULL ANS)
+ 		     (COND ((ISTENSE (PARSENODE? RSS) 'MODAL)
+-			    '((SAY I DON/'T KNOW)))
++			    '((SAY I DON\'T KNOW)))
+ 			   (T '((SAY NO)))))
+ 		    (T
+ 		     (APPEND
+@@ -645,7 +645,7 @@
+ 	     (RETURN
+ 	      (COND
+ 	       ((EQ TYPE 'WHERE)
+-		(GLOBAL-ERR I CAN/'T ANSWER "WHERE" QUESTIONS YET))
++		(GLOBAL-ERR I CAN\'T ANSWER \"WHERE\" QUESTIONS YET))
+ 	       ((EQ TYPE 'WHY)
+ 		(COND ((EQ (GET EVENT 'WHY) 'COMMAND)
+ 		       '((SAY BECAUSE YOU TOLD ME TO)))
+@@ -660,14 +660,14 @@
+ 			EVENTLIST)
+ 		(COND
+ 		 ((NULL ANS)
+-		  '((SAY I CAN/'T ANALYZE HOW I DID IT)))
++		  '((SAY I CAN\'T ANALYZE HOW I DID IT)))
+ 		 (T
+ 		  (APPEND
+ 		   '((SAY BY))
+ 		   (NAMEACTION 'ING (CAR ANS))
+ 		   (MAPCAN 
+ 		    '(LAMBDA (X) 
+-			     (CONS '(PRINC '/;)
++			     (CONS '(PRINC '\;)
+ 				   (CONS '(SAY THEN)
+ 					 (NAMEACTION 'ING X))))
+ 		    (CDR ANS))))))
 @@ -772,7 +772,7 @@
         (PROG (COUNT EXAM X RES ANS COMMA?) 
  	     (SETQ NAMES (MAPCAR '(LAMBDA (X) (NAMEOBJ X SPEC))
@@ -18,6 +125,38 @@
  	UP   (SETQ COUNT 1.)					       ;THE BACKREF HACKER - DDM 5-12-73 INSTRUCTIONS
  	     (SETQ EXAM (CAR NAMES))				       ;FOR NAMING IT.
  	     (SETQ NAMES (CDR NAMES))
+@@ -800,11 +800,11 @@
+ 		   ((CDR RES)
+ 		    (SETQ COMMA? T)
+ 		    (SETQ ANS (APPEND ANS
+-				      '((PRINC '/,))
++				      '((PRINC '\,))
+ 				      (CAR RES))))
+ 		   ((SETQ ANS (APPEND ANS
+ 				      (AND COMMA?
+-					   '((PRINC '/,)))
++					   '((PRINC '\,)))
+ 				      '((SAY AND))
+ 				      (CAR RES)))))
+ 	     (GO OUTPUT)))
+@@ -864,7 +864,7 @@
+ 		   (T (BUG NAMEACTION
+ 			   -
+ 			   I
+-			   DON/'T
++			   DON\'T
+ 			   KNOW
+ 			   WHAT
+ 			   TO
+@@ -926,7 +926,7 @@
+ 		       EIGHT
+ 		       NINE
+ 		       TEN))
+-	   (GLOBAL-ERR I CAN/'T COUNT THAT HIGH)))
++	   (GLOBAL-ERR I CAN\'T COUNT THAT HIGH)))
+ 
+ ;;;############################################################
+ 
 @@ -1119,7 +1119,7 @@
         (COND ((EQUAL NUM 1.) 'ONCE)
  	     ((EQUAL NUM 2.) 'TWICE)
@@ -43,3 +182,33 @@
  								       ;COULD ANSWER IT BUT NOT WITH RECENT INFO.
  
  
+@@ -1388,15 +1388,15 @@
+ 					      (CADR (CADDDR ANS))
+ 					      (FUNCTION SASS))))
+ 			   (RETURN T))
+-		       (SAY /
+-BY)		       (PRINC (COND ((EQ X (Quote IT)) (Quote "IT"))
++		       (SAY \
++BY)		       (PRINC (COND ((EQ X (Quote IT)) (Quote \"IT\"))
+ 				    ((MEMQ (Quote THEY) (FROM SENT NIL))
+-				     (Quote "THEY"))
+-				    ((Quote "THEM"))))
++				     (Quote \"THEY\"))
++				    ((Quote \"THEM\"))))
+ 		       (SAY , I ASSUME YOU)
+ 		       (PRINC (Quote MEAN))
+ 		       (MAPC (FUNCTION PRINT2) (PARAP XX))
+-		       (RETURN (PRINC (Quote /./
++		       (RETURN (PRINC (Quote \.\
+ )))))    EXPR)
+ 
+ 
+@@ -1484,7 +1484,7 @@
+ ;;;		     (Q (THE SAME THING)))
+ ;;;		    ((ert iassume: some implementation dependant code used to
+ ;;;be executed at this point and no one has figured out yet quite what it was
+-;;;trying to accomplish/. sorry/, you lose))
++;;;trying to accomplish\. sorry\, you lose))
+ ;;;                    ;;; ( SETQ Y
+ ;;;		    ;;;	   (SUBLIS '((YOU #777777
+ ;;;		    ;;;			  PNAME

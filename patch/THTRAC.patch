@@ -1,0 +1,88 @@
+--- code/thtrac
++++ SHRDLU/THTRAC
+@@ -19,7 +19,7 @@
+        (SETQ X (COND ((ATOM X) (LIST X T NIL))
+ 		     ((CDDR X) X)
+ 		     ((NULL (CDR X)) (PRINT X)
+-				     (PRINC 'BAD/ FORMAT)
++				     (PRINC 'BAD\ FORMAT)
+ 				     (RETURN NIL))
+ 		     ((LIST (CAR X) (CADR X) NIL))))
+ 
+@@ -92,7 +92,7 @@
+ (DEFPROP THTRACES
+ 	 (LAMBDA NIL
+ 		 (PRINT (CADAR THTREE))
+-		 (PRINC 'FAILED/ )
++		 (PRINC 'FAILED\ )
+ 		 (EVLIS (CDDAR THTREE))
+ 		 (THPOPT)
+ 		 NIL)
+@@ -101,7 +101,7 @@
+ (DEFPROP THTRACES
+ 	 (LAMBDA NIL
+ 		 (PRINT (CADAR THTREE))
+-		 (PRINC 'SUCCEEDED/ )
++		 (PRINC 'SUCCEEDED\ )
+ 		 (EVLIS (CDDAR THTREE))
+ 		 (THPOPT)
+ 		 THVALUE)
+@@ -116,9 +116,9 @@
+ 		 (THPUSH THTREE (LIST 'THTRACES
+ 				      (THGENS B)
+ 				      (AND B '(THERT))))
+-		 (THPRINTC 'PASSING/ BKPT)
++		 (THPRINTC 'PASSING\ BKPT)
+ 		 (PRIN1 (CADAR THTREE))
+-		 (PRINC '/ )
++		 (PRINC '\ )
+ 		 ;BY SETTING THBRANCH AND THABRANCH, A TRIPLE IS CREATED
+ 		 ;BY THVAL FOR BACKTRACKING.  THEN, THE TREE IS POPPED
+ 		 ;TO PREVENT THTRACES FROM TYPING OUT THE MEANINGLESS
+@@ -135,9 +135,9 @@
+ 				      (THGENS G)
+ 				      '(AND THVALUE (PRIN1 THVALUE))
+ 				      (AND B '(THERT))))
+-		 (THPRINTC 'TRYING/ GOAL)
++		 (THPRINTC 'TRYING\ GOAL)
+ 		 (PRIN1 (CADAR THTREE))
+-		 (PRINC '/ )
++		 (PRINC '\ )
+ 		 (PRIN1 X))
+ 	 THTRACE)
+ 
+@@ -147,7 +147,7 @@
+ 				      X
+ 				      '(AND THVALUE (PRIN1 THVALUE))
+ 				      (AND B '(THERT))))
+-		 (THPRINTC 'ENTERING/ THEOREM)
++		 (THPRINTC 'ENTERING\ THEOREM)
+ 		 (PRIN1 X))
+ 	 THTRACE)
+ 
+@@ -158,7 +158,7 @@
+ 				      (AND B '(THERT))))
+ 		 (PRINT 'ASSERTING)
+ 		 (PRIN1 (CADAR THTREE))
+-		 (PRINC '/ )
++		 (PRINC '\ )
+ 		 (PRIN1 X))
+ 	 THTRACE)
+ 
+@@ -169,7 +169,7 @@
+ 				      (AND B '(THERT))))
+ 		 (PRINT 'ERASING)
+ 		 (PRIN1 (CADAR THTREE))
+-		 (PRINC '/ )
++		 (PRINC '\ )
+ 		 (PRIN1 X))
+ 	 THTRACE);UTILITY FNS
+ 
+@@ -198,5 +198,5 @@
+ (SETQ THGENS 0)
+ 
+ 
+-(DEFUN THPRINTC (X) (TERPRI) (PRINC X) (PRINC '/ ))
++(DEFUN THPRINTC (X) (TERPRI) (PRINC X) (PRINC '\ ))
+ 
+\ No newline at end of file

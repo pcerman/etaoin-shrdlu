@@ -57,15 +57,14 @@
                      (VAR))))
 
         ((NOT (ATOM VAR))
-             (COND ((EQ (CAR VAR) '$E)
-                        (CONS (LIST 'THEV (THSVAR (CADR VAR)))
-                          (THSVAR (CDDR VAR))))
-                   ((PROGV '(FST RST) nil
-                           (SETQ FST (THSVAR (CAR VAR))
-                                 RST (THSVAR (CDR VAR)))
-                           (COND ((AND (EQ FST (CAR VAR)) (EQ RST (CDR VAR)))
-                                      VAR)
-                                 ((CONS FST RST)))))))
+             (DO ((VAR VAR (CDR VAR))
+                  (LAST (LIST NIL) (CDR LAST))
+                  (NVAR NIL (OR NVAR LAST)))
+                 ((ATOM VAR) (RPLACD LAST (THSVAR VAR)) (CDR NVAR))
+               (COND ((AND (EQ (CAR VAR) '$E) (NOT (ATOM (CDR VAR))))
+                          (RPLACD LAST (LIST (LIST 'THEV (THSVAR (CADR VAR)))))
+                          (SETQ VAR (CDR VAR)))
+                     ((RPLACD LAST (LIST (THSVAR (CAR VAR))))))))
 
         ((EQ VAR '$T)
              '(THTBF THTRUE))

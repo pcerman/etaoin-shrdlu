@@ -1,11 +1,23 @@
 --- code/dictio
 +++ SHRDLU/DICTIO
+@@ -8,9 +8,9 @@
+ ;;;
+ ;;;===========================================================
+ 
+-(DEFS /, FEATURES (SPECIAL) SPECIAL (COMMA))
++(DEFS \, FEATURES (SPECIAL) SPECIAL (COMMA))
+ 
+-(DEFS " FEATURES (B-SPECIAL RELWRD) B-SPECIAL (DOUBLEQUOTER))
++(DEFS \" FEATURES (B-SPECIAL RELWRD) B-SPECIAL (DOUBLEQUOTER))
+ 
+ (DEFS A SEMANTICS ((DET T)) FEATURES (DET NS INDEF))
+ 
 @@ -103,7 +103,7 @@
  					    '#1
  					    (LIST 'QUOTE
  						  (REFER? #2))))))))
 -		   (T (ERTSTOP SORRY I DON 'T UNDERSTAND THE
-+		   (T (ERTERR SORRY I DON/'T UNDERSTAND THE
++		   (T (ERTERR SORRY I DON\'T UNDERSTAND THE
  			       VERB BE WHEN YOU USE IT LIKE
  			       THAT))))
  

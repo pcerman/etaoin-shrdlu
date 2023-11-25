@@ -38,7 +38,7 @@
  	     ANSWER?
  	     T
  	     SMN
-@@ -218,7 +224,7 @@
+@@ -218,28 +224,26 @@
  ;;;           INITIALIZATION ROUTINES
  ;;;*****************************************************************
  
@@ -47,13 +47,17 @@
         (SUSPEND)
         (CURSORPOS 'C)
         (TERPRI)
-@@ -226,13 +232,11 @@
+-       (PRINC 'SHRDLU/ VERSION/ )
++       (PRINC 'SHRDLU\ VERSION\ )
         (princ version)
-        (princ '/ / / )
-        (PRINC 'LOADED/ )
+-       (princ '/ / / )
+-       (PRINC 'LOADED/ )
 -       (PRINC date )
 -       (princ '/ )
-        (PRINC 'IN/ BLISP/ )
+-       (PRINC 'IN/ BLISP/ )
++       (princ '\ \ \ )
++       (PRINC 'LOADED\ )
++       (PRINC 'IN\ BLISP\ )
         (princ (status lispversion))
 -       (TERPRI)
 -       (SAY REFER COMMENTS AND QUESTIONS TO DDM)
@@ -64,6 +68,15 @@
         (TERPRI)
  (and note (progn (terpri)(apply 'say note)
              (terpri)(terpri)))
+ ;;;       (SAY -IF YOU ARE NEAR A DEC-340)
+ ;;;       (TERPRI)
+-;;;       (PRINC '/ / / / / )
+-;;;       (OR (AND (INTEROGATE DO YOU WANT THE DISPLAY /(TYPE "Y/ " OR "N/ "/))
++;;;       (PRINC '\ \ \ \ \ )
++;;;       (OR (AND (INTEROGATE DO YOU WANT THE DISPLAY \(TYPE "Y\ " OR "N\ "\))
+ ;;;		(SETQ WANT-DISPLAY T))
+ ;;;	   (SETQ WANT-DISPLAY NIL))
+ ;;;       (COND ((NOT WANT-DISPLAY) (NO340)))
 @@ -267,9 +271,9 @@
  ;;;       (TERPRI)
         (SAY YOU ARE NOW IN A READ-EVAL-PRINT LOOP)
@@ -71,7 +84,7 @@
 -       (SAY TYPE "GO/ " TO ENTER READY STATE)
 -       (CATCH (ERT) ABORT-PARSER)
 -       (sstatus toplevel '(shrdlu))
-+;;;       (SAY TYPE "GO/ " TO ENTER READY STATE)
++;;;       (SAY TYPE "GO\ " TO ENTER READY STATE)
 +;;;       (CATCH (ERT) ABORT-PARSER)
 +;;;       (sstatus toplevel '(shrdlu))
         (SHRDLU)) 

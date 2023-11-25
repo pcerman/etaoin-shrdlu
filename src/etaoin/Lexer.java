@@ -17,7 +17,7 @@ import java.io.StringReader;
 
 public class Lexer {
 
-    public static final char ESCAPE_CHAR = '/';
+    public static final char ESCAPE_CHAR = '\\';
 
     private static final String NON_ATOM_CHAR;
 

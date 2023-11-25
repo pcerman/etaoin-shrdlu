@@ -1,14 +1,126 @@
 --- code/show
 +++ SHRDLU/SHOW
-@@ -61,7 +61,7 @@
+@@ -6,9 +6,9 @@
+ (parsings))
+ 
+ (defun parsings nil
+-(printc '/ / ratio/ of/ winning/ parses/ to/ total/ )
++(printc '\ \ ratio\ of\ winning\ parses\ to\ total\ )
+ (princ (get 'parsings 'wins))
+-(princ '//)
++(princ '\/)
+ (princ parsings))
+ 
+ (defun parsetrace labels
+@@ -61,8 +61,8 @@
  		      ((GET X 'INTERPRET)
  		       (SETQ BODY (CDR (GET X 'INTERPRET))))
  		      ((GET X 'EXPR)
 -		       (SETQ BODY (CDDR (CADDR (GET X 'EXPR)))))
+-		      (T (PRINC 'CAN/'T/ BE-) (GO TRACED)))
 +		       (SETQ BODY (AND NIL (CDDR (CADDR (GET X 'EXPR))))))
- 		      (T (PRINC 'CAN/'T/ BE-) (GO TRACED)))
++		      (T (PRINC 'CAN\'T\ BE-) (GO TRACED)))
  		(MAP '(LAMBDA (Y) 
  			      (AND (ATOM (CAR Y))
+ 				   (RPLACD Y
+@@ -99,7 +99,7 @@
+ 		 (PROG (BODY) 
+ 		       (PRINT X)
+ 		       (COND ((NOT (GET X 'LABELTRACED))
+-			      (PRINC 'ISN/'T/ ALLREADY-)
++			      (PRINC 'ISN\'T\ ALLREADY-)
+ 			      (GO TRACED))
+ 			     ((GET X 'INTERPRET)
+ 			      (SETQ BODY (CDR (GET X
+@@ -107,7 +107,7 @@
+ 			     ((GET X 'EXPR)
+ 			      (SETQ BODY (CDDR (CADDR (GET X
+ 							   'EXPR)))))
+-			     (T (PRINC 'CAN/'T/ BE-)
++			     (T (PRINC 'CAN\'T\ BE-)
+ 				(GO TRACED)))
+ 		       (MAP '(LAMBDA (Y) (AND (ATOM (CAR Y))
+ 					      (RPLACD Y (CDDR Y))))
+@@ -146,21 +146,21 @@
+ 					    WITH
+ 					    SPECIALHACKS
+ 					    FOR
+-					    LOCATION/,
+-					    ETC/.))))))
++					    LOCATION\,
++					    ETC\.))))))
+ 
+ (DEFUN PEV (EV COL TOP) 
+        (TERPRI)
+        (TAB COL)
+        (PRINC EV)
+-       (PRINC '/ / )
++       (PRINC '\ \ )
+        (PRINC (GET EV 'TYPE))
+-       (PRINC '/ / TIME:/ )
++       (PRINC '\ \ TIME:\ )
+        (PRINC (GET EV 'START))
+-       (PRINC '/ TO/ )
++       (PRINC '\ TO\ )
+        (PRINC (GET EV 'END))
+        (AND TOP
+-	    (PRINC '/ REASON:/ )
++	    (PRINC '\ REASON:\ )
+ 	    (PRINC (GET EV 'WHY)))
+        (MAPC '(LAMBDA (X) (AND (EQ EV (GET X 'WHY))
+ 			       (PEV X (PLUS COL 8.) NIL)))
+@@ -230,15 +230,15 @@
+        (PROG (PLANNERSEE) 
+ 	     (TERPRI)
+ 	     (TAB 16.)
+-	     (PRINC 'CURRENT/ SCENE)
++	     (PRINC 'CURRENT\ SCENE)
+ 	     (TERPRI)
+ 	     (TERPRI)
+ 	     (MAPC 
+ 	      '(LAMBDA (OBJ) 
+ 		(PRINT OBJ)
+-		(PRINC '-->/ / )
++		(PRINC '-->\ \ )
+ 		(EVLIS (CAR (NAMEOBJ OBJ 'DESCRIBE)))
+-		(PRINC '/ AT/ )
++		(PRINC '\ AT\ )
+ 		(PRINC (CADR (ASSOC OBJ ATABLE)))
+ 		(AND (SETQ OBJ
+ 			   (THVAL '(THFIND ALL
+@@ -248,12 +248,12 @@
+ 							     $?X)))
+ 				  (LIST (LIST 'OBJ OBJ))))
+ 		     (TAB 13.)
+-		     (PRINC 'SUPPORTS/ )
++		     (PRINC 'SUPPORTS\ )
+ 		     (PRINC OBJ)))
+ 	      '(:B1 :B2 :B3 :B4 :B5 :B6 :B7 :B10 :BOX))
+ 	     (TERPRI)
+ 	     (SAY THE HAND IS GRASPING)
+-	     (PRINC '/ )
++	     (PRINC '\ )
+ 	     (PRINC (COND ((SETQ OBJ
+ 				 (THVAL '(THGOAL (#GRASPING $_X))
+ 					'((X THUNBOUND))))
+@@ -268,7 +268,7 @@
+        (COND ((NULL A) (SHOWTELLCHOICE))
+ 	     ((GET (CAR A) ACTION)
+ 	      (APPLY (GET (CAR A) ACTION) (LIST A)))
+-	     ((PRINTEXT '(I DON/'T KNOW HOW TO))
++	     ((PRINTEXT '(I DON\'T KNOW HOW TO))
+ 	      (PRINT2 ACTION)
+ 	      (PRINT2 (CAR A))))
+        '*)
+@@ -353,7 +353,7 @@
+ 						      YOU
+ 						      WANT
+ 						      TO
+-						      SEE/.
++						      SEE\.
+ 						      A
+ 						      LINE
+ 						      FEED
 @@ -418,7 +418,8 @@
  (DEFS LISP
        SHOWTREE
@@ -19,7 +131,123 @@
        TELLTREE
        (FUNCTION)
        SHOW
-@@ -1023,7 +1024,7 @@
+@@ -585,7 +586,7 @@
+ 							ENTRYAND
+ 							EXIT
+ 							OF
+-							FUNCTION/.
++							FUNCTION\.
+ 							BREAK
+ 							CAUSES
+ 							LISP
+@@ -593,7 +594,7 @@
+ 							STOP
+ 							ON
+ 							ENTRY
+-							ANDEXIT/,
++							ANDEXIT\,
+ 							ACCEPTING
+ 							USER
+ 							COMMANDS
+@@ -603,7 +604,7 @@
+ 							<CONTROL
+ 							X>
+ 							IS
+-							TYPED/.))))))
++							TYPED\.))))))
+ 		  (APPLY (SUBST 'WBREAK 'BREAK (CADR X))
+ 			 (LIST (CAR X))))
+       SHOW
+@@ -704,7 +705,7 @@
+ 						BE
+ 						EXAMINED
+ 						--
+-						E/.G/.
++						E\.G\.
+ 						CLAUSE
+ 						NG
+ 						PREPG
+@@ -750,7 +751,7 @@
+       (LAMBDA (X) (OR (CDR X)
+ 		      (SETQ X (LIST (REQUEST '(TYPE LIST
+ 						    OF
+-						    LABELS/,
++						    LABELS\,
+ 						    OR
+ 						    ON
+ 						    OR
+@@ -776,7 +777,7 @@
+ 				     TO
+ 				     PARSE
+ 				     SYNTACTIC
+-				     UNITS/,
++				     UNITS\,
+ 				     INCLUDING
+ 				     FAILURES))
+ 			 (TRACE PARSE)
+@@ -799,7 +800,7 @@
+ 					PARSED
+ 					FOR
+ 					OTHER
+-					POSSIBILITIES/,
++					POSSIBILITIES\,
+ 					SEE
+ 					THESIS
+ 					SECTION
+@@ -820,7 +821,7 @@
+ 		      (T (SETQ X (MAKESYM 'THEOREM))))
+ 		(NCONC (LIST (QUERY '(WHICH THEOREM TYPE?)
+ 				    '(THANTE THERASING THCONSE)
+-				    '(ANTECEDENT/, ERASING/,
++				    '(ANTECEDENT\, ERASING\,
+ 						   OR
+ 						   CONSEQUENT
+ 						   THEOREM))
+@@ -830,7 +831,7 @@
+ 				      '(A LIST
+ 					  ENCLOSED
+ 					  IN
+-					  PARENS/,
++					  PARENS\,
+ 					  LIKE
+ 					  (#IS $?X #ZOG)))
+ 			     (REQUEST 'BODY:
+@@ -870,12 +871,12 @@
+ 						   ARE
+ 						   TO
+ 						   BE
+-						   EXAMINED/.
++						   EXAMINED\.
+ 						   TYPE
+ 						   <LF>
+ 						   FOR
+ 						   ENTIRE
+-						   TREE/.))
++						   TREE\.))
+ 				 '#SYSTEMS)
+ 			     'SYSTEM
+ 			     0.)))
+@@ -953,7 +954,7 @@
+ 						  BY
+ 						  WORD
+ 						  --
+-						  E/.G/.
++						  E\.G\.
+ 						  (#IS *** #ZOG)
+ 						  OR
+ 						  ((#IS *** #ZOG)
+@@ -1014,16 +1015,16 @@
+ 						USE
+ 						#1
+ 						FOR
+-						SUBJECT/,
++						SUBJECT\,
+ 						#2
+ 						FOR
+-						OBJECT/.E/.G/.
++						OBJECT\.E\.G\.
+ 						(#SUPPORT #1 #2)
+ 						OR
  						((#HAPPY #1)
  						 (#SMILING #1)))))))))
  	       'SEMANTICS)
